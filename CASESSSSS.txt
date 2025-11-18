@@ -1,0 +1,36 @@
+caseChoices = [ "Chroma Case", 
+            "Gamma Case", 
+            "Dreams & Nightmares Case",
+            "Kilowatt Case",
+            "Fever Case",
+            "CS:GO Weapon Case"
+        ]
+    
+    
+    
+    blue = 100
+    purple = 40
+    pink = 20
+    red = 10
+    gold = 2
+    
+    template
+    StoreItem(self, name, price, specials, items, damage, heal, armor, amount, rarity, manaCost, weapon = False, cosmetic = False)
+    EX.
+        StoreItems("Dmyt's Ball Doctor", 0, True, False, False, True, False, 100, pink ), #pink
+
+    chromaOptions = (StoreItems(), #blue
+                     StoreItems(), #blue
+                     StoreItems(), #blue
+                     StoreItems(), #blue
+                     StoreItems(), #blue
+                     StoreItems(), #purple
+                     StoreItems(), #purple
+                     StoreItems(), #purple
+                     StoreItems(), #pink
+                     StoreItems(), #pink
+                     StoreItems(), #pink
+                     StoreItems(), #red
+                     StoreItems(), #red
+                     StoreItems(), #gold
+                    )
