@@ -20,3 +20,8 @@ CASINOOOOOO
             print("5. Exit")
 
             choice = input("Choose an action (1-5): ").strip()
+
+
+
+
+KIVY

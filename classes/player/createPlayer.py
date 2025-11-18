@@ -1,6 +1,5 @@
 import random
 from .armor import Armor
-
 from .specials import Special
 class Player:
     
@@ -13,7 +12,8 @@ class Player:
         self.items = [] #empty storage
         self.wallet = 0
         #self.weapon = 
-        self.armor = Armor("Naked")
+        self.armor = None
+
         
         
 
@@ -94,7 +94,7 @@ class Player:
         if choice == 2:
             counter = 0
             for i in self.attacks:
-                print(counter, i.name)
+                print(counter, i.name, i.manaCost)
                 counter += 1
             specialChoice = int(input("which special do you wanna useeeeeee? "))
 

@@ -1,3 +1,5 @@
+from classes.player.armor import Armor
+
 class StoreItems:
     
     def __init__(self, name, price, specials, items, damage, heal, armor, amount, rarity, manaCost, weapon = False, cosmetic = False):
@@ -36,3 +38,6 @@ class StoreItems:
                 return 0
         else:
             print("sorry for party rocking :(")
+            
+    def toArmor(self):
+        return Armor(self.name, self.amount)

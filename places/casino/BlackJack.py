@@ -37,10 +37,8 @@ def print_hand(title, hand, hide_first=False):
         cards = " ".join(rank + suit for rank, suit in hand)
         print(f"{title}: {cards}  ({calculate_hand_value(hand)})")
 
-
-# ---------------------------------------
 # Blackjack Game
-# ---------------------------------------
+
 
 def blackjack(wallet, wager, shoe=None):
     """Play a round of blackjack with real cards."""
@@ -63,7 +61,7 @@ def blackjack(wallet, wager, shoe=None):
 
     # Check natural blackjack
     if calculate_hand_value(player) == 21:
-        print("\n🎉 BLACKJACK! You win 1.5× your bet.")
+        print("\nBLACKJACK! You win 1.5× your bet.")
         return wallet + int(wager * 1.5), shoe
 
     # Player turn
@@ -76,7 +74,7 @@ def blackjack(wallet, wager, shoe=None):
             print_hand("Your hand", player)
 
             if calculate_hand_value(player) > 21:
-                print("\n💥 You bust! Dealer wins.")
+                print("\nYou bust! Dealer wins.")
                 return wallet - wager, shoe
 
         elif move == "d":
