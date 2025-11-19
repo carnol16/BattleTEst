@@ -1,0 +1,27 @@
+Crafting
+    SCALES TO MAKE ARMOR
+
+Weapons
+    MAKE Weapons
+
+CREATE DROPS
+
+STORE
+
+CASINOOOOOO
+
+
+
+            print("\n Battle Menu:")
+            print("1. Base Attack")
+            print("2. Special Attack")
+            print("3. Use Item")
+            print("4. Defend")
+            print("5. Exit")
+
+            choice = input("Choose an action (1-5): ").strip()
+
+
+
+
+KIVY
