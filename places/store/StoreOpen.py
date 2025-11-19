@@ -9,7 +9,7 @@ from classes.priceGrab import marketItem
 from classes.items import CaseItem
 
 
-def storeOpen(mainCharacter):
+def openStore(mainCharacter):
     print(f"\nWELCOME TO BIG TOP {mainCharacter.name}!")
 
 

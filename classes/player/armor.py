@@ -18,7 +18,8 @@ class Armor:
             armor=True,
             amount=self.amount,
             rarity=50,
-            manaCost=0
+            manaCost=0,
+            durability= self.durability
         )
         
     def attach(self, user):

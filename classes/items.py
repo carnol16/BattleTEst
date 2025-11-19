@@ -16,8 +16,9 @@ class StoreItems:
         amount,
         rarity,
         manaCost,
-        weapon=False,
-        cosmetic=False,
+        weapon = False,
+        cosmetic = False,
+        durability = None
     ):
         self.name = name
         self.price = price
@@ -31,6 +32,7 @@ class StoreItems:
         self.manaCost = manaCost
         self.weapon = weapon
         self.cosmetic = cosmetic
+        self.durability = durability
 
     def use(self, user, target):
         """
@@ -140,6 +142,7 @@ class CraftItems(StoreItems):
         required_items,  # <-- NEW FIELD
         weapon=False,
         cosmetic=False,
+        durability = 100
     ):
         super().__init__(
             name,
@@ -154,6 +157,7 @@ class CraftItems(StoreItems):
             manaCost,
             weapon,
             cosmetic,
+            durability
         )
 
         # Required items for crafting (dict or list)

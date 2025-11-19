@@ -1,6 +1,7 @@
 import random
 from .armor import Armor
 from .specials import Special
+from classes.items import StoreItems
 class Player:
     
 
@@ -10,10 +11,15 @@ class Player:
         self.name = name
         self.mana = 50
         self.space = 10 #default space
-        self.items = [] #empty storage
+        self.items = [
+                        StoreItems("scales", 5, False, True, False, False, False, 0, 100, 0),
+                        StoreItems("scales", 5, False, True, False, False, False, 0, 100, 0),
+                        StoreItems("scales", 5, False, True, False, False, False, 0, 100, 0)
+                      ] #empty storage
         self.wallet = 0
         self.weapon = None
         self.armor = None
+        self.badBoy = False
 
         
         
@@ -25,7 +31,7 @@ class Player:
             self.space = 3
             self.attacks = [
                 Special("Taco HITTER", "attack", True, False, 20, 10),
-                Special("Women Strike", "attack", True, False, 10, 10),
+                Special("Counter Strike", "attack", True, False, 10, 10),
                 Special("Children Tears", "heal", False, True, 100, 50)
             ]   
 
@@ -51,7 +57,6 @@ class Player:
                 Special("Motorboating", "heal", False, True, 50, 40)
             ]
             
-
         elif type == "ninja":
             self.health = 80
             self.damage = 7
@@ -78,6 +83,26 @@ class Player:
         elif color == "red":
             self.health -= 8
             self.damage += 2
+
+    def myStats(self):
+        avalibleSpace = self.space - len(self.items) 
+        print(f"Here is {self.name}'s silly stats\n")
+        print(f"Health: {self.health}")
+        print(f"Mana: {self.mana}")
+        if self.armor is None:
+            print(f"Base Defense: ", self.defense)
+            print("Armor: None")
+        else:
+            print(f"Base Defense: ", self.damage - self.armor.amount)
+            print(f"Armor: {self.armor.name} || DEF: +{self.armor.amount} || DUR: {self.armor.durability}")
+        if self.weapon is None:
+            print(f"Base Damage: ", self.damage)
+            print("Weapon: None")
+        else:
+            print(f"Base Damage: ", self.damage - self.weapon.amount)
+            print(f"Weapon: {self.weapon.name} || DMG: +{self.weapon.amount}")
+        print(f"Available Space {avalibleSpace}")
+
 
     def attack(self, success, option, enemy):
         choice = int(option)
@@ -125,14 +150,43 @@ class Player:
             return 0
 
 
-    def defend(self, success, incoming_damage):
+    def defend(self, success, incomingDamage):
+
+        # Safety check: no armor equipped
+        if self.armor is None:
+            return incomingDamage
+
+        # Dodge chance
         if success % 2 == 0:
             if random.random() < 0.1:
                 print("GOOD DODGE")
                 return 0
-            reduced = incoming_damage - self.defense
-            return max(reduced, 1)
-        return incoming_damage
+
+            #Damage reduction
+            reducedDamage = incomingDamage - self.defense
+            reducedDamage = max(reducedDamage, 1)
+
+            # Armor durability logic
+            if self.armor.durability is None:
+                self.armor.durability = 100
+
+            durabilityLoss = int((reducedDamage / 3) - 1)
+            if durabilityLoss < 1:
+                durabilityLoss = 1
+
+            self.armor.durability -= durabilityLoss
+
+            # Prevent negative durability
+            if self.armor.durability <= 0:
+                self.armor.durability = 0
+                print(f"{self.armor.name} broke!")
+                self.armor.detach(self)
+
+            return reducedDamage
+
+        # No dodge / odd success → full damage 
+        return incomingDamage
+
 
     
     def storage(self):
@@ -141,7 +195,7 @@ class Player:
 
         while True:
             print("\n===== STORAGE MENU =====")
-            print("1. Check space")
+            print("1. Check Stats")
             print("2. Remove item")
             print("3. View all items")
             print("4. Use an item")
@@ -153,9 +207,7 @@ class Player:
 
             # 1. CHECK SPACE
             if choice == "1":
-                free = self.space - len(self.items)
-                print(f"Inventory space: {len(self.items)}/{self.space} (Free: {free})")
-
+                self.myStats()
 
             # 2. REMOVE ITEM
             elif choice == "2":
@@ -182,8 +234,21 @@ class Player:
                 else:
                     print("\nYour Items:")
                     for i, item in enumerate(self.items):
-                        kind = "Armor" if getattr(item, "armor", False) else "Weapon" if getattr(item, "weapon", False) else "Item"
-                        print(f"{i}: {item.name} ({kind})")
+
+                        if getattr(item, "armor", False):
+                            kind = "Armor"
+                        elif getattr(item, "weapon", False):
+                            kind = "Weapon"
+                        else:
+                            kind = "Item"
+
+                        # Show durability for armor
+                        if kind == "Armor":
+                            durability = getattr(item, "durability", "N/A")
+                            print(f"{i}: {item.name} ({kind}) - Durability: {durability}")
+                        else:
+                            print(f"{i}: {item.name} ({kind})")
+
 
 
             # 4. USE ITEM (consumables)
@@ -314,6 +379,7 @@ class Player:
                 
             else:
                 print("your loss:( ")      
+
 
 
 

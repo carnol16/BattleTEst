@@ -1,5 +1,5 @@
 from classes.items import StoreItems
-from classes.blacksmith.Build import craftableItems, build
+from .Build import craftableItems, build
 
 def openBlacksmith(mainCharacter):
 
@@ -12,10 +12,8 @@ def openBlacksmith(mainCharacter):
         print("4. Leave")
 
         blacksmithChoice = input("What would you like to do? >>> ").strip()
-
-        # ------------------------
         # BUILD OPTION
-        # ------------------------
+
         if blacksmithChoice == "1":
             
             print("\n--- CRAFTABLE ITEMS ---")
@@ -33,23 +31,20 @@ def openBlacksmith(mainCharacter):
             build(mainCharacter, chosen)
             continue
 
-        # ------------------------
-        # REPAIR (placeholder)
-        # ------------------------
+        # REPAIR
         elif blacksmithChoice == "2":
             print("Repair system coming soon...")
             continue
 
-        # ------------------------
-        # SCAVENGE (placeholder)
-        # ------------------------
+
+        # SCAVENGE 
+
         elif blacksmithChoice == "3":
             print("You scavenge for scraps...")
             continue
 
-        # ------------------------
+
         # EXIT
-        # ------------------------
         elif blacksmithChoice == "4":
             print("You leave the blacksmith.")
             break

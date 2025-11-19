@@ -11,29 +11,39 @@ craftableItems = [
 
 
 def build(player, chosenItem):
-    needed = chosenItem.required_items
+    needed = chosenItem.required_items   # example: {"logs": 4}
 
-    # Count materials in player's inventory
+    # SAFELY count only valid items
     inv_count = {}
+
     for item in player.items:
+        # Skip invalid entries (strings or None)
+        if not hasattr(item, "name"):
+            continue  
+
         inv_count[item.name] = inv_count.get(item.name, 0) + 1
 
-    # Check if player has required materials
+    # Check materials
     for material, amt in needed.items():
-        if inv_count.get(material, 0) < amt:
-            print(f"Missing {material}: need {amt}, have {inv_count.get(material, 0)}")
+        have = inv_count.get(material, 0)
+        if have < amt:
+            print(f"Missing {material}: need {amt}, have {have}")
             return None
 
-    # Remove required materials
+
+    # Remove materials by name
     for material, amt in needed.items():
         removed = 0
-        for item in list(player.items):
-            if item.name == material and removed < amt:
+        
+        for item in list(player.items):  # iterate over a copy
+            if hasattr(item, "name") and item.name == material:
                 player.items.remove(item)
                 removed += 1
+                if removed == amt:
+                    break
 
-    # Add crafted item
+    # Add crafted product
     player.quickStorage(chosenItem)
-    print(f"✅ Successfully crafted {chosenItem.name}!")
+    print(f" Successfully crafted {chosenItem.name}!")
     return chosenItem
 
