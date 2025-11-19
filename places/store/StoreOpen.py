@@ -79,9 +79,18 @@ def openStore(mainCharacter):
             freeSpace = mainCharacter.space - len(mainCharacter.items)
             print("\n\nItems For Sale:")
             for i, item in enumerate(availableItems):
-                print(f"{i+1}. {item.name} - {item.price}")
+                itemType = ""
+                if item.items == True  and item.damage == True :
+                    itemType = "DMG to Enemy"
+                elif item.items == True and item.heal == True:
+                    itemType = "Heal to Player"
+                elif item.armor == True:
+                    itemType = "DEF for Player"
+                elif item.weapon == True:
+                    itemType = "DMG for Player"
+                print(f"{i+1}. {item.name}: Price: ${item.price}: +{item.amount} {itemType}")
             if freeSpace > 0:
-                pickedItem = int(input("\nitem 1 or 2? \n").strip())
+                pickedItem = int(input("\nitem 1 or 2? \nPress 3 to purchase neither: ").strip())
                 if pickedItem in [1, 2]:
                     chosen = availableItems[pickedItem - 1]
 
@@ -140,10 +149,11 @@ def openStore(mainCharacter):
                             )
                         else:
                             mainCharacter.attacks.append(
-                                Special(chosen.name, 0, chosen.damage, chosen.heal, chosen.amount, chosen.manaCost))
-
+                                Special(chosen.name, 0, chosen.damage, chosen.heal, chosen.amount, chosen.manaCost)) 
                     else:
                         print("Not enough Monkey Money!")
+                elif pickedItem == 3:
+                    continue
                 else:
                     print("Invalid choice")
 

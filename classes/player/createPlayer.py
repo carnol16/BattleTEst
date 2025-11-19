@@ -3,7 +3,7 @@ from .armor import Armor
 from .specials import Special
 from classes.items import StoreItems
 class Player:
-    
+
 
     def __init__(self, type, color, name):
         self.type = type
@@ -11,15 +11,12 @@ class Player:
         self.name = name
         self.mana = 50
         self.space = 10 #default space
-        self.items = [
-                        StoreItems("scales", 5, False, True, False, False, False, 0, 100, 0),
-                        StoreItems("scales", 5, False, True, False, False, False, 0, 100, 0),
-                        StoreItems("scales", 5, False, True, False, False, False, 0, 100, 0)
-                      ] #empty storage
+        self.items = [] #empty storage
         self.wallet = 0
         self.weapon = None
         self.armor = None
         self.badBoy = False
+        self.increaseDefend = 0
 
         
         
@@ -103,7 +100,6 @@ class Player:
             print(f"Weapon: {self.weapon.name} || DMG: +{self.weapon.amount}")
         print(f"Available Space {avalibleSpace}")
 
-
     def attack(self, success, option, enemy):
         choice = int(option)
         base = self.damage
@@ -117,7 +113,7 @@ class Player:
             else:
                 return 0  # Attack missed
 
-        if choice == 2:
+        elif choice == 2:
             counter = 0
             for i in self.attacks:
                 print(counter, i.name, i.manaCost)
@@ -128,7 +124,7 @@ class Player:
             dmg = self.attacks[specialChoice].use(self, enemy)
             return dmg
 
-        if choice == 3:
+        elif choice == 3:
             counter = 0
             itemCount = len(self.items)
             if itemCount > 0:
@@ -145,50 +141,83 @@ class Player:
             else:
                 print("wasted a turn dumbass")
                 return 0
-
+        elif choice == 4:
+            extraDefense = random.randint(1, 8)
+            print("Ahhhhhh you scared huh")
+            print(f"This round: DEF +{extraDefense}")
+            self.increaseDefend = extraDefense
+            
+            return 0
         else:
             return 0
-
-
+        
     def defend(self, success, incomingDamage):
 
         # Safety check: no armor equipped
         if self.armor is None:
             return incomingDamage
+        elif self.increaseDefend == 0:
+            # Dodge chance
+            if success % 2 == 0:
+                if random.random() < 0.1:
+                    print("GOOD DODGE")
+                    return 0
 
-        # Dodge chance
-        if success % 2 == 0:
-            if random.random() < 0.1:
-                print("GOOD DODGE")
-                return 0
+                #Damage reduction
+                reducedDamage = incomingDamage - self.defense
+                reducedDamage = max(reducedDamage, 1)
 
-            #Damage reduction
-            reducedDamage = incomingDamage - self.defense
-            reducedDamage = max(reducedDamage, 1)
+                # Armor durability logic
+                if self.armor.durability is None:
+                    self.armor.durability = 100
 
-            # Armor durability logic
-            if self.armor.durability is None:
-                self.armor.durability = 100
+                durabilityLoss = int((reducedDamage / 3) - 1)
+                if durabilityLoss < 1:
+                    durabilityLoss = 1
 
-            durabilityLoss = int((reducedDamage / 3) - 1)
-            if durabilityLoss < 1:
-                durabilityLoss = 1
+                self.armor.durability -= durabilityLoss
 
-            self.armor.durability -= durabilityLoss
+                # Prevent negative durability
+                if self.armor.durability <= 0:
+                    self.armor.durability = 0
+                    print(f"{self.armor.name} broke!")
+                    self.armor.detach(self)
 
-            # Prevent negative durability
-            if self.armor.durability <= 0:
-                self.armor.durability = 0
-                print(f"{self.armor.name} broke!")
-                self.armor.detach(self)
+                return reducedDamage
 
-            return reducedDamage
+        elif self.increaseDefend > 0:
+            # Dodge chance
+            if success % 2 == 0:
+                if random.random() < 0.1:
+                    print("GOOD DODGE")
+                    return 0
 
+                #Damage reduction
+                reducedDamage = incomingDamage - self.defense - self.increaseDefend
+                reducedDamage = max(reducedDamage, 1)
+
+                # Armor durability logic
+                if self.armor.durability is None:
+                    self.armor.durability = 100
+
+                durabilityLoss = int((reducedDamage / 3) - 1)
+                if durabilityLoss < 1:
+                    durabilityLoss = 5
+
+                self.armor.durability -= durabilityLoss
+
+                # Prevent negative durability
+                if self.armor.durability <= 0:
+                    self.armor.durability = 0
+                    print(f"{self.armor.name} broke!")
+                    self.armor.detach(self)
+                    
+                self.increaseDefend = 0
+
+                return reducedDamage
         # No dodge / odd success → full damage 
         return incomingDamage
-
-
-    
+   
     def storage(self):
         if not hasattr(self, "items"):
             self.items = []
@@ -353,8 +382,7 @@ class Player:
 
             else:
                 print("Invalid choice, try again.")
-
-                
+           
     def quickStorage(self, addItem):
         freeSpace = self.space - len(self.items)
         if freeSpace > 0:
@@ -379,6 +407,7 @@ class Player:
                 
             else:
                 print("your loss:( ")      
+    
 
 
 

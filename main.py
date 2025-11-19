@@ -2,7 +2,6 @@ from gameplay.gameplay import characterBuildIntro, enemyBattle, postCombat
 from classes.player.createPlayer import Player
 
 
-name = "george"
 mainCharacter = Player("warrior", "blue", "Greg" )
 #mainCharacter = characterBuildIntro()                                                                                                            
 fightNum = 0
