@@ -2,8 +2,8 @@ from gameplay.gameplay import characterBuildIntro, enemyBattle, postCombat, boss
 from classes.player.createPlayer import Player
 
 
-mainCharacter = Player("boat man", "blue", "Greg" )
-#mainCharacter = characterBuildIntro()                                                                                                            
+#mainCharacter = Player("boat man", "blue", "Greg" )
+mainCharacter = characterBuildIntro()                                                                                                            
 fightNum = 0
 
 # GAMEPLAY LOOP

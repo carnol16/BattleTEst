@@ -119,7 +119,7 @@ def characterBuildIntro():
     """
     # Hey my fellow baddie. I'm Stacy. The big titty goth girl at your service
     """
-    print("Hey. I'm Stacy.")
+    print("Hey my fellow baddie. I'm Stacy. The big titty goth girl at your service I'm Stacy.")
     name = input("Welcome to the silly land of Lollipop Circle!!! What is your name: ")
 
     if len(name) <= 5:
@@ -410,7 +410,6 @@ def bossBattle(mainCharacter, fightNum):
     mainCharacter.mana += 15
     fightNum += 1
     return fightNum
-
 
 def postCombat(mainCharacter):
     # STOP TIME
