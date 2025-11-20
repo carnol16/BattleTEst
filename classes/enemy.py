@@ -1,5 +1,6 @@
 import random
 from .items import StoreItems
+from classes.player.specials import Special
 class Enemy:
 
     def __init__(self, kind):
@@ -67,3 +68,33 @@ class Enemy:
     
     def getDrop(self):
         return random.choice(self.drop)
+
+class Boss(Enemy):
+    
+    def __init__(self, kind, fightNum):
+
+        super().__init__(kind)
+        
+        
+        if kind == "Carl":
+            self.health = 250 * (fightNum / 5)
+            self.damage = 10
+            self.defense = 250
+            self.flying = False
+            self.special = (
+                Special("Finger Guns", "attack", True, False, 20, 45),
+                Special("Poppers", "heal", False, True, 200, 75)
+                )
+            self.drop = ("gold", "gold", "gold", "gold", "golds") + self.special
+            
+            
+    def attackBoss(self, Player):
+        specialChoice = random.choice(self.special)
+        
+        dmg = self.attacks[specialChoice].use(self, Player)
+        if random.random() < 0.2:
+            return int(dmg * 1.5)
+
+        return dmg
+            
+            

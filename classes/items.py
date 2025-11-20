@@ -139,7 +139,7 @@ class CraftItems(StoreItems):
         amount,
         rarity,
         manaCost,
-        required_items,  # <-- NEW FIELD
+        required_items,
         weapon=False,
         cosmetic=False,
         durability = 100

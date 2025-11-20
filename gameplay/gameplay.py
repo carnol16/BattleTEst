@@ -1,5 +1,5 @@
 import random
-from classes.enemy import Enemy
+from classes.enemy import Enemy, Boss
 from classes.player.armor import Armor
 from classes.player.weapon import Weapon
 from places.store.StoreOpen import openStore
@@ -281,6 +281,136 @@ def enemyBattle(mainCharacter, fightNum):
     mainCharacter.mana += 15
     fightNum += 1
     return fightNum
+
+def bossBattle(mainCharacter, fightNum):
+
+    mult = fightNum / 5
+    enemy_types = ("Carl",)
+    enemy_name = random.choice(enemy_types)
+    enemy = Boss(enemy_name, fightNum)
+
+    print("\nBoss #" + str(fightNum / 5) + ": " + enemy_name)
+
+    turn = 1
+    print("Current Health: ", mainCharacter.health)
+    print("Current Mana: ", mainCharacter.mana)
+
+    # Battle LOOP
+    while enemy.health > 0 and mainCharacter.health > 0:
+
+        if turn % 2 == 0:
+            # Enemy attacks
+            success = random.randint(0, 100)
+            if success % 4 == 0:
+                dmg = Boss.attackBoss(mainCharacter)
+            else:
+                dmg = Boss.attack(success)
+            
+            dmg  *= mult
+            reduce = mainCharacter.defend(success, dmg)
+
+            mainCharacter.health -= reduce
+            # mainCharacter.armor.durablity -= 1
+
+            print(f"Enemy hits you for {reduce}! Your HP = {mainCharacter.health}")
+
+        else:
+            # Player attacks
+            success = random.randint(0, 10)
+            print("\nBattle Menu:")
+            print("1. Base Attack")
+            print("2. Special Attack")
+            print("3. Use Item")
+            print("4. Defend")
+            
+            choice = input("Choose an action (1-4): ").strip()
+
+            if choice not in ("1", "2", "3", "4"):
+                print("\nwasted a turn because you can't read smh")
+
+                
+            else:
+                dmg = mainCharacter.attack(success, choice, enemy)
+                
+                dmg *= mult
+                reduce = enemy.defend(success, dmg)
+                enemy.health -= reduce
+
+                print(f"\nYou hit {enemy_name} for {reduce}! Enemy HP = {enemy.health}")
+
+        turn += 1
+
+        if mainCharacter.health <= 0:
+            print("GAME OVER!")
+            exit()
+    print("Congrats!!! You defeated the", enemy_name)
+
+    # GET THE DROP
+    if mainCharacter.badBoy == False:
+        mainCharacter.wallet += random.randint(0, 15)
+        itemDropped = enemy.getDrop()
+
+        if itemDropped == "gold":
+            mainCharacter.wallet += random.randint(5, 30)
+
+        else:
+            print("YAYYYYYYY, they dropped " + itemDropped.name)
+
+            # If item is armor, convert it
+            if itemDropped.armor:
+                print(f"{itemDropped.name} is armor!")
+
+                equip = input("Do you want to equip it now? (yes/no): ").lower()
+
+                if equip == "yes":
+                    newArmor = Armor(itemDropped.name, itemDropped.amount)
+
+                    # remove old armor bonus if exists
+
+                    if mainCharacter.armor:
+                        mainCharacter.armor.detach(mainCharacter)
+
+                    newArmor.attach(mainCharacter)
+                    # skip storage
+            elif itemDropped.weapon:
+                print(f"{itemDropped.name} is weapon!")
+
+                equip = input("Do you want to equip it now? (yes/no): ").lower()
+
+                if equip == "yes":
+                    newWeapon = Weapon(itemDropped.name, itemDropped.amount)
+
+                    # remove old armor bonus if exists
+
+                    if mainCharacter.weapon:
+                        mainCharacter.weapon.detach(mainCharacter)
+
+                    newWeapon.attach(mainCharacter)
+                    # skip storage
+            else:
+
+                addStorage = input("would you like to put this in your inventory: ")
+
+                if addStorage.lower() == "yes":
+                    mainCharacter.quickStorage(itemDropped)
+
+                elif addStorage.lower() == "no":
+                    print("okayyyyyy")
+
+                else:
+                    print("dumb ass bitch can't say yes or no...")
+                    print(
+                        "You can't get a item drop, monkey money, or baddies next fight"
+                    )
+                    mainCharacter.badBoy = True
+    else:
+        print("WOMP WOMP!\nShouldn't have been a bad boy" + mainCharacter.name)
+
+    mainCharacter.health += 10
+    mainCharacter.mana += 15
+    fightNum += 1
+    return fightNum
+
 
 def postCombat(mainCharacter):
     # STOP TIME
