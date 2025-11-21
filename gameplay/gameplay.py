@@ -189,13 +189,14 @@ def enemyBattle(mainCharacter, fightNum):
         else:
             # Player attacks
             success = random.randint(0, 10)
-            print("\nBattle Menu:")
+            print("\n===== Battle Menu =====")
             print("1. Base Attack")
             print("2. Special Attack")
             print("3. Use Item")
             print("4. Defend")
             
-            choice = input("Choose an action (1-4): ").strip()
+            choice = input("> ").strip()
+            print("")
 
             if choice not in ("1", "2", "3", "4"):
                 print("\nwasted a turn because you can't read smh")
@@ -206,15 +207,18 @@ def enemyBattle(mainCharacter, fightNum):
 
                 reduce = enemy.defend(success, dmg)
                 enemy.health -= reduce
-
-                print(f"\nYou hit {enemy_name} for {reduce}! Enemy HP = {enemy.health}")
+                
+                if enemy.health <= 0:
+                    print(f"\nYou hit {enemy_name} for {reduce}! Enemy HP = 0")
+                else:
+                    print(f"\nYou hit {enemy_name} for {reduce}! Enemy HP = {enemy.health}")
 
         turn += 1
 
         if mainCharacter.health <= 0:
-            print("GAME OVER!")
+            print("\n\n\nGAME OVER!")
             exit()
-    print("Congrats!!! You defeated the", enemy_name)
+    print("\nCongrats!!! You defeated the", enemy_name)
 
     # GET THE DROP
     if mainCharacter.badBoy == False:
@@ -225,7 +229,7 @@ def enemyBattle(mainCharacter, fightNum):
             mainCharacter.wallet += random.randint(5, 30)
 
         else:
-            print("YAYYYYYYY, they dropped " + itemDropped.name)
+            print(f"{enemy.kind} dropped {itemDropped.name}\n")
 
             # If item is armor, convert it
             if itemDropped.armor:
@@ -260,7 +264,7 @@ def enemyBattle(mainCharacter, fightNum):
                     # skip storage
             else:
 
-                addStorage = input("would you like to put this in your inventory: ")
+                addStorage = input("would you like to put this in your inventory (yes/no): ")
 
                 if addStorage.lower() == "yes":
                     mainCharacter.quickStorage(itemDropped)
@@ -285,7 +289,7 @@ def enemyBattle(mainCharacter, fightNum):
 def bossBattle(mainCharacter, fightNum):
 
     mult = fightNum / 5
-    enemy_types = ("Carl",)
+    enemy_types = ("Carl", "BENJAMIN")
     enemy_name = random.choice(enemy_types)
     enemy = Boss(enemy_name, fightNum)
 
@@ -302,9 +306,9 @@ def bossBattle(mainCharacter, fightNum):
             # Enemy attacks
             success = random.randint(0, 100)
             if success % 4 == 0:
-                dmg = Boss.attackBoss(mainCharacter)
+                dmg = Boss.attackBoss(enemy)
             else:
-                dmg = Boss.attack(success)
+                dmg = Boss.attack(enemy, success)
             
             dmg  *= mult
             reduce = mainCharacter.defend(success, dmg)
@@ -413,53 +417,49 @@ def bossBattle(mainCharacter, fightNum):
 
 def postCombat(mainCharacter):
     # STOP TIME
-    print("You currently have", mainCharacter.wallet, "monkey money")
-
-    stop = input(
-        "Do you want to stop at Big Top, Casino, Blacksmith, Storage, or nothing? (store / casino / blacksmith / storage / none) "
-    ).lower()
+    print("\n\nYou currently have", mainCharacter.wallet, "monkey money")
 
     if mainCharacter.badBoy == False:
         while True:
+            print("\n===== POST FIGHT MENU =====")
+            print("1. BIG TOP")
+            print("2. Casino")
+            print("3. Blacksmith")
+            print("4. Storage")
+            print("5. Next Fight")
 
-            if stop.lower() == "store":
+            stop = input("> ").strip()
+
+            if stop.lower() == "1":
                 openStore(mainCharacter)
-                stop = input(
-                    "Do you want to stop at Big Top, Casino, Blacksmith, Storage, or nothing? (store / casino / blacksmith / storage /  none) "
-                ).lower()
+
                 continue
 
-            elif stop.lower() == "casino":
+            elif stop.lower() == "2":
                 openCasino(mainCharacter)
-                stop = input(
-                    "Do you want to stop at Big Top, Casino, Blacksmith, Storage, or nothing? (store / casino / blacksmith / storage /  none) "
-                ).lower()
+
                 continue
             
-            elif stop.lower() == "blacksmith":
+            elif stop.lower() == "3":
                 openBlacksmith(mainCharacter)
-                stop = input(
-                    "Do you want to stop at Big Top, Casino, Blacksmith, Storage, or nothing? (store / casino / blacksmith / storage /  none) "
-                ).lower()
+
                 continue
             
-            elif stop.lower() == "storage":
+            elif stop.lower() == "4":
                 mainCharacter.storage()
-                stop = input(
-                   "Do you want to stop at Big Top, Casino, Blacksmith, Storage, or nothing? (store / casino / blacksmith / storage /  none) "
-                ).lower()
+
                 continue
 
-            elif stop.lower() == "none":
-                print("You continue your journey...")
+            elif stop.lower() == "5":
+                print("\nYou continue your journey...\n\n")
                 break
 
             else:
-                print("Dumb ass bitch can't say a real option...")
-                print("You can't get an item drop, gold, or baddies next fight.")
+                print("\nDumb ass bitch can't say a real option...")
+                print("You can't get an item drop, gold, or baddies next fight.\n\n")
                 mainCharacter.badBoy = True
                 break
 
     else:
-        print("\nYOU THOUGHT! Hope you learned your lesson silly goose.")
+        print("\nYOU THOUGHT! Hope you learned your lesson silly goose.\n\n")
         mainCharacter.badBoy = False

@@ -1,5 +1,6 @@
 certifi==2025.11.12
 charset-normalizer==3.4.4
+colorama==0.4.6
 csgo_market_api==0.1.2
 idna==3.11
 requests==2.32.5

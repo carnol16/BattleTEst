@@ -2,6 +2,7 @@ import random
 from .armor import Armor
 from .specials import Special
 from classes.items import StoreItems
+from colorama import Fore, Back, Style
 class Player:
 
 
@@ -84,10 +85,10 @@ class Player:
     def myStats(self):
         avalibleSpace = self.space - len(self.items) 
         print(f"Here is {self.name}'s silly stats\n")
-        print(f"Health: {self.health}")
-        print(f"Mana: {self.mana}")
+        print(Fore.GREEN + f"Health: {self.health}")
+        print(Fore.BLUE + f"Mana: {self.mana}")
         if self.armor is None:
-            print(f"Base Defense: ", self.defense)
+            print(Fore.WHITE + f"Base Defense: ", self.defense)
             print("Armor: None")
         else:
             print(f"Base Defense: ", self.damage - self.armor.amount)
@@ -96,42 +97,60 @@ class Player:
             print(f"Base Damage: ", self.damage)
             print("Weapon: None")
         else:
-            print(f"Base Damage: ", self.damage - self.weapon.amount)
-            print(f"Weapon: {self.weapon.name} || DMG: +{self.weapon.amount}")
+            print(Fore.BLUE + f"Base Damage:  {self.damage - self.weapon.amount}")
+            print(Fore.RED + f"Weapon: {self.weapon.name} || DMG: +{self.weapon.amount}")
+            print(Fore.RED + f"Total Damage: {self.damage + self.weapon.amount}")
         print(f"Available Space {avalibleSpace}")
 
     def attack(self, success, option, enemy):
-        choice = int(option)
+        choice = option
         base = self.damage
 
-        if choice == 1:
+        if choice == "1":
             if success % 2 == 0:
                 if random.random() < 0.2:
-                    print("YOU HIT A CRIT")
+                    print("\nYOU HIT A CRIT!!!")
                     return int(base * 1.5)
                 return base
             else:
                 return 0  # Attack missed
 
-        elif choice == 2:
+        elif choice == "2":
             counter = 0
             for i in self.attacks:
-                print(counter, i.name, i.manaCost)
+                def colorPick():
+                    if i.type == "attack":
+                        return Fore.RED
+                    elif i.type == "heal":
+                        return Fore.GREEN
+                    elif i.type == "attack" and "heal":
+                        return Fore.MAGENTA
+                    else:
+                        return Fore.WHITE
+                print(Fore.WHITE + f"{counter}", Fore.YELLOW + f" {i.name}, {i.manaCost}",  colorPick() + f"{i.type}")
                 counter += 1
-            specialChoice = int(input("which special do you wanna useeeeeee? "))
+                
+            specialChoice = int(input(Fore.WHITE + "\nWhich special do you wanna useeeeeee? "))
 
             # FIXED: use(self, enemy) instead of mainCharacter, enemy
             dmg = self.attacks[specialChoice].use(self, enemy)
             return dmg
 
-        elif choice == 3:
+        elif choice == "3":
             counter = 0
             itemCount = len(self.items)
             if itemCount > 0:
                 for i in self.items:
+                    def colorPick():
+                        if i.type == "damage":
+                            return Fore.RED
+                        elif i.type == "heal":
+                            return Fore.GREEN
+                        elif i.type == "attack" and "heal":
+                            return Fore.MAGENTA
                     print(counter, i.name)
                     counter += 1
-                itemChoice = int(input("which item do you wanna useeeeeee? "))
+                itemChoice = int(input("\nwhich item do you wanna useeeeeee? "))
 
                 # FIXED: use(self, enemy)
                 self.items[itemChoice].use(self, enemy)
@@ -139,16 +158,17 @@ class Player:
                 del self.items[itemChoice]
                 return 0
             else:
-                print("wasted a turn dumbass")
+                print("\nwasted a turn dumbass")
                 return 0
-        elif choice == 4:
+        elif choice == "4":
             extraDefense = random.randint(1, 8)
-            print("Ahhhhhh you scared huh")
+            print("\nAhhhhhh you scared huh")
             print(f"This round: DEF +{extraDefense}")
             self.increaseDefend = extraDefense
             
             return 0
         else:
+            print("")
             return 0
         
     def defend(self, success, incomingDamage):
@@ -160,7 +180,7 @@ class Player:
             # Dodge chance
             if success % 2 == 0:
                 if random.random() < 0.1:
-                    print("GOOD DODGE")
+                    print("\nGOOD DODGE!!!")
                     return 0
 
                 #Damage reduction
@@ -180,7 +200,7 @@ class Player:
                 # Prevent negative durability
                 if self.armor.durability <= 0:
                     self.armor.durability = 0
-                    print(f"{self.armor.name} broke!")
+                    print(f"\n{self.armor.name} broke!")
                     self.armor.detach(self)
 
                 return reducedDamage
@@ -189,7 +209,7 @@ class Player:
             # Dodge chance
             if success % 2 == 0:
                 if random.random() < 0.1:
-                    print("GOOD DODGE")
+                    print("\nGOOD DODGE!!!")
                     return 0
 
                 #Damage reduction
@@ -209,7 +229,7 @@ class Player:
                 # Prevent negative durability
                 if self.armor.durability <= 0:
                     self.armor.durability = 0
-                    print(f"{self.armor.name} broke!")
+                    print(f"\ns{self.armor.name} broke!")
                     self.armor.detach(self)
                     
                 self.increaseDefend = 0
@@ -288,13 +308,14 @@ class Player:
 
                 print("\nWhich item do you want to use?")
                 for i, item in enumerate(self.items):
-                    print(f"{i}: {item.name}")
+
+                    print(Fore.GREEN +  f"{i}: {item.name}, +{item.amount}")
 
                 try:
                     idx = int(input("Choose index: "))
                     item = self.items[idx]
 
-                    if item.damage or item.heal:
+                    if item.heal:
                         item.use(self, self)  # You may need target = enemy in battle
                         print(f"Used {item.name}")
                         self.items.pop(idx)

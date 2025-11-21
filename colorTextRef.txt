@@ -1,0 +1,6 @@
+mana == blue
+health == pink
+special == yellow
+damage == red
+heal == green
+heal & damage == magenta

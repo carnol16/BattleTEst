@@ -79,7 +79,7 @@ class Boss(Enemy):
         if kind == "Carl":
             self.health = 250 * (fightNum / 5)
             self.damage = 10
-            self.defense = 250
+            self.defense = 15
             self.flying = False
             self.special = (
                 Special("Finger Guns", "attack", True, False, 20, 45),
@@ -87,12 +87,44 @@ class Boss(Enemy):
                 )
             self.drop = ("gold", "gold", "gold", "gold", "golds") + self.special
             
-            
-    def attackBoss(self, Player):
-        specialChoice = random.choice(self.special)
+        if kind == "BENJAMIN":
+            self.health = 180 * (fightNum / 5)
+            self.damage = 7
+            self.defense = 8
+            self.flying = False
+            self.special = (
+                Special("Vtuber Stacy Body Pillow", "attack", True, False, 35, 60),
+                Special("Snacks of Various Tasty", "heal", False, True, random.randint(10, 100), random.randint(10, 30))
+                )
+            self.drop = ("gold", "gold", "gold", "gold", "golds") + self.special
         
-        dmg = self.attacks[specialChoice].use(self, Player)
+        
+        if kind == "STACY MOM":
+            self.health = 100 * (fightNum / 5)
+            self.damage = 50
+            self.defense = 3
+            self.flying = False
+
+        
+            
+            
+    def attackBoss(self):
+        specialChoice = random.choice(self.special)
+        if random.random() < 0.3:
+            if specialChoice.type == "attack":
+                dmg = specialChoice.amount
+                print(f"{self.kind} is using {specialChoice.name} \nIt hits you for {dmg}")
+                return dmg
+            else: 
+                self.health += specialChoice.amount
+                print(f"+ {specialChoice.amount}\nBoss HP: {self.health}")
+                return 0
+
+        else:
+            dmg = self.damage
+            print(f"{self.kind} hits you for {dmg}")
         if random.random() < 0.2:
+            print(f"\n{self.kind} hit a CRIT!!!")
             return int(dmg * 1.5)
 
         return dmg

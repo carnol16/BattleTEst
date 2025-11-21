@@ -1,3 +1,5 @@
+from colorama import Fore, Style, Back, init
+
 class Special:
     def __init__(self, name, type, damage, heal, amount, manaCost):
         self.name = name
@@ -8,28 +10,37 @@ class Special:
         self.manaCost = manaCost
 
     def use(self, user, target):
+        init(autoreset=True)
         """
         Returns the numeric effect of the special (damage or heal).
         """
         
         if user.mana >= self.manaCost:
-            if self.damage:
+            if self.heal and self.damage == True:
+                target.health -= self.amount
+                user.health += self.amount
+                user.mana -= self.manaCost
+                print(Fore.BLUE + f"New mana total:  {user.mana}")
+                print(Fore.GREEN + f"New health total: {user.health}")
+                return self.amount
+                
+            elif self.damage:
                 target.health -= self.amount
                 user.mana -= self.manaCost
-                print("New mana total: ", user.mana)
+                print(Fore.BLUE + f"New mana total:  {user.mana}")
                 return self.amount  # return damage done
             elif self.heal:
                 user.health += self.amount
                 user.mana -= self.manaCost
-                print("New mana total: ",  user.mana)
-                print("new health total: ", user.health)
+                print(Fore.BLUE + f"New mana total:  {user.mana}")
+                print(Fore.GREEN + f"New health total: {user.health}")
                 return 0
             
             else:
 
                 return 0
         else:
-            print("sorry for party rocking :(")
+            print("\nsorry for party rocking :(\nYou don't have enough mana\n")
             return 0
         
     

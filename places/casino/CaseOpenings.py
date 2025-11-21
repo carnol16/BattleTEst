@@ -41,7 +41,7 @@ caseChoices = [ "Chroma Case"
                 #"Gamma Case", 
                 #"Dreams & Nightmares Case",
                 #"Kilowatt Case",
-                #"Fever Case",
+                "Fever Case",
                 #"CS:GO Weapon Case"
             ]
 
@@ -70,24 +70,41 @@ chromaOptions = (
                 #Gold
                 StoreItems("Monday Night Bible Study", 300, True, False, True, False, False, 250, gold, 100), #gold
                 )
+
 """
+blue = 5 Items
+purple  = 3 Items / Weapons / Armor
+pink = 3 Weapons / Armor
+red = 2 Specials
+gold = 1 Specials
+"""
+
 feverOptions =  (
+                #BLUE
                 StoreItems("Rotten Tomatos", 1, False, True, False, True, False, -2, blue, 0), #blue heal
                 StoreItems("Toe Nails", 3, False, True, True, False, False, 1, blue, 0), #blue damage
                 StoreItems("Lolipop", 4, False, True, False, True, False, 5, blue, 0), #blue heal
                 StoreItems("Blue Berry Muffin", 4, False, True, False, True, False, 5, blue, 0 ), #blue heal
                 StoreItems("Spit Ball", 0, False, True, True, False, False, 2, blue, 0), #blue damage
-                StoreItems(), #purple
-                StoreItems(), #purple
-                StoreItems(), #purple
-                StoreItems(), #pink
-                StoreItems(), #pink
-                StoreItems(), #pink
-                StoreItems(), #red
-                StoreItems(), #red
-                StoreItems(), #gold
+                
+                #PURPLE
+                StoreItems("Spike Factory", 45, False, False, False, False, False, 21, purple, 0, True), # Weapon
+                StoreItems("Bing Bong", random.randint(6, 7), False, True, False, False, False, 0, purple, 0), #Item
+                StoreItems("Nacho Cheese Doritos® Locos Tacos Meal Combo", 27, False, True, False, True, False, 42, purple, 0 ), #Item Heal
+                
+                #PINK
+                StoreItems("Grandma's Sweater", 0, False, False, False, False, True, 9, pink, 0 ), #Armor
+                StoreItems("Ben 10 Watch", 50, False, False, False, False, False, random.randint(10, 50), pink, 0, True), #Weapon
+                StoreItems("Wire Cutters", 12, False, False, True, False, False, 15, pink, 0, True), #pink
+                
+                #RED
+                StoreItems("Dirty Dishes", 1, True, False, True, False, False, 40, pink, 100), #red
+                StoreItems("Cat Fleas", 200, True, False, True, False, False, 6, red, 10), #red
+                
+                #GOLD
+                StoreItems("Stacy's Spit", 400, True, False, True, False, False, 100, gold, 100), #gold
                 )
-
+"""
 weaponsOptions = (
                 StoreItems(), #blue
                 StoreItems(), #blue

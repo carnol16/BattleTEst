@@ -61,5 +61,5 @@ item  = market.getItem(pickedCase)
 casePrice = int(item.price * 10)
 caseName = item.name
 
-print(caseName, casePrice)
+#print(caseName, casePrice)
 
