@@ -46,13 +46,13 @@ class csPriceChecker:
 #Test
 
 caseChoices = [ "Chroma Case", 
-                "Gamma Case", 
-                "Dreams & Nightmares Case",
-                "Kilowatt Case",
+                #"Gamma Case", 
+                #"Dreams & Nightmares Case",
+                #"Kilowatt Case",
                 "Fever Case"
                 ]
 
-pickedCase = caseChoices[random.randint(0,4)]
+pickedCase = caseChoices[random.randint(0,1)]
 
 market = csPriceChecker()
 

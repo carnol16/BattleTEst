@@ -4,7 +4,8 @@ from classes.player.createPlayer import Player
 
 craftableItems = [
     CraftItems("Reptillian Origami Sweater", 100, False, True, False, False, True, 25, 10, 0, {"scales": 3}),
-    CraftItems("Wooden Gun", 40, False, False, True, False, False, 9, 70, 0, {"logs": 4 })
+    CraftItems("Wooden Gun", 40, False, False, True, False, False, 9, 70, 0, {"logs": 4 }),
+    CraftItems("UwU Hydration Hot Pot", 60, False, True, False, True, False, 100, 10, 0, {"Top Ramen": 2, "Gamer Girl Bath Water": 1})
     
     
 ]

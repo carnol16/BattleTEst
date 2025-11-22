@@ -126,6 +126,8 @@ def openCase(case_name, player=None, player_return=False):
     # Map case name → tuple of options
     if case_name.lower() == "chroma case":
         options = chromaOptions
+    elif case_name.lower() == "fever case":
+        options = feverOptions
     else:
         print("Unknown case!")
         return

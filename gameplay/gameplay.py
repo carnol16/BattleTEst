@@ -6,7 +6,7 @@ from places.store.StoreOpen import openStore
 from places.casino.CasinoOpen import openCasino
 from places.blacksmith.BlackSmithOpen import openBlacksmith
 from classes.player.createPlayer import Player
-
+from colorama import Fore, Back, Style
 
 
 def characterBuildIntro():
@@ -168,8 +168,8 @@ def enemyBattle(mainCharacter, fightNum):
     print("\nEnemy #" + str(fightNum + 1) + ": " + enemy_name)
 
     turn = 1
-    print("Current Health: ", mainCharacter.health)
-    print("Current Mana: ", mainCharacter.mana)
+    print(Fore.GREEN + "Current Health: ", mainCharacter.health)
+    print(Fore.BLUE + "Current Mana: ", mainCharacter.mana)
 
     # Battle LOOP
     while enemy.health > 0 and mainCharacter.health > 0:
@@ -183,17 +183,21 @@ def enemyBattle(mainCharacter, fightNum):
 
             mainCharacter.health -= reduce
             # mainCharacter.armor.durablity -= 1
-
-            print(f"Enemy hits you for {reduce}! Your HP = {mainCharacter.health}")
+            if mainCharacter.health <= 0:
+                print(Fore.WHITE + f"Enemy hits you for {reduce}! Your HP = 0")
+            else:
+                print(Fore.WHITE + f"Enemy hits you for {reduce}! Your HP = {mainCharacter.health}")
 
         else:
             # Player attacks
+
             success = random.randint(0, 10)
-            print("\n===== Battle Menu =====")
-            print("1. Base Attack")
-            print("2. Special Attack")
-            print("3. Use Item")
-            print("4. Defend")
+            print(Fore.WHITE + "")
+            print(Back.RED + "===== Battle Menu =====" + Back.RESET)
+            print(Back.RED + "1. Base Attack         " + Back.RESET)
+            print(Back.RED + "2. Special Attack      " + Back.RESET)
+            print(Back.RED + "3. Use Item            " + Back.RESET)
+            print(Back.RED + "4. Defend.             " + Back.RESET)
             
             choice = input("> ").strip()
             print("")
@@ -321,13 +325,15 @@ def bossBattle(mainCharacter, fightNum):
         else:
             # Player attacks
             success = random.randint(0, 10)
-            print("\nBattle Menu:")
-            print("1. Base Attack")
-            print("2. Special Attack")
-            print("3. Use Item")
-            print("4. Defend")
+            print(Fore.WHITE + "")
+            print(Back.RED + "===== Battle Menu =====" + Back.RESET)
+            print(Back.RED + "1. Base Attack         " + Back.RESET)
+            print(Back.RED + "2. Special Attack      " + Back.RESET)
+            print(Back.RED + "3. Use Item            " + Back.RESET)
+            print(Back.RED + "4. Defend.             " + Back.RESET)
             
-            choice = input("Choose an action (1-4): ").strip()
+            choice = input("> ").strip()
+            print("")
 
             if choice not in ("1", "2", "3", "4"):
                 print("\nwasted a turn because you can't read smh")
@@ -357,58 +363,11 @@ def bossBattle(mainCharacter, fightNum):
         if itemDropped == "gold":
             mainCharacter.wallet += random.randint(5, 30)
 
-        else:
-            print("YAYYYYYYY, they dropped " + itemDropped.name)
+        
+        elif itemDropped.specials == True:
+            mainCharacter.attacks.append(itemDropped)
 
-            # If item is armor, convert it
-            if itemDropped.armor:
-                print(f"{itemDropped.name} is armor!")
 
-                equip = input("Do you want to equip it now? (yes/no): ").lower()
-
-                if equip == "yes":
-                    newArmor = Armor(itemDropped.name, itemDropped.amount)
-
-                    # remove old armor bonus if exists
-
-                    if mainCharacter.armor:
-                        mainCharacter.armor.detach(mainCharacter)
-
-                    newArmor.attach(mainCharacter)
-                    # skip storage
-            elif itemDropped.weapon:
-                print(f"{itemDropped.name} is weapon!")
-
-                equip = input("Do you want to equip it now? (yes/no): ").lower()
-
-                if equip == "yes":
-                    newWeapon = Weapon(itemDropped.name, itemDropped.amount)
-
-                    # remove old armor bonus if exists
-
-                    if mainCharacter.weapon:
-                        mainCharacter.weapon.detach(mainCharacter)
-
-                    newWeapon.attach(mainCharacter)
-                    # skip storage
-            else:
-
-                addStorage = input("would you like to put this in your inventory: ")
-
-                if addStorage.lower() == "yes":
-                    mainCharacter.quickStorage(itemDropped)
-
-                elif addStorage.lower() == "no":
-                    print("okayyyyyy")
-
-                else:
-                    print("dumb ass bitch can't say yes or no...")
-                    print(
-                        "You can't get a item drop, monkey money, or baddies next fight"
-                    )
-                    mainCharacter.badBoy = True
-    else:
-        print("WOMP WOMP!\nShouldn't have been a bad boy" + mainCharacter.name)
 
     mainCharacter.health += 10
     mainCharacter.mana += 15

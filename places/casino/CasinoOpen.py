@@ -86,12 +86,13 @@ def openCasino(mainCharacter):
                 print(".", end="", flush=True)
                 time.sleep(0.5)
             print()
-
+            
+            
+            del mainCharacter.items[actual_index]
             # Open the case, apply reward automatically
             reward = case.openCase(mainCharacter)
 
             # Remove the case
-            del mainCharacter.items[actual_index]
 
         # Option 3: Leave Casino
         elif casinoChoice == "3":

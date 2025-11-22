@@ -13,17 +13,17 @@ def openStore(mainCharacter):
 
 
     caseChoices = [
-        "Chroma Case"
+        "Chroma Case",
         # "Gamma Case",
         # "Dreams & Nightmares Case",
         # "Kilowatt Case",
-        # "Fever Case",
+        "Fever Case"
         # "CS:GO Weapon Case"
     ]
 
-    # pickedCase = caseChoices[random.randint(0,4)]
+    #pickedCase = caseChoices[random.randint(0,4)]
 
-    pickedCase = caseChoices[0]
+    pickedCase = caseChoices[random.randint(0,1)]
 
     market = csPriceChecker()
 

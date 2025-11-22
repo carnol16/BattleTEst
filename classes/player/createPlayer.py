@@ -94,7 +94,7 @@ class Player:
             print(f"Base Defense: ", self.damage - self.armor.amount)
             print(f"Armor: {self.armor.name} || DEF: +{self.armor.amount} || DUR: {self.armor.durability}")
         if self.weapon is None:
-            print(f"Base Damage: ", self.damage)
+            print(Fore.RED + f"Base Damage: ", self.damage)
             print("Weapon: None")
         else:
             print(Fore.BLUE + f"Base Damage:  {self.damage - self.weapon.amount}")
@@ -127,7 +127,11 @@ class Player:
                         return Fore.MAGENTA
                     else:
                         return Fore.WHITE
-                print(Fore.WHITE + f"{counter}", Fore.YELLOW + f" {i.name}, {i.manaCost}",  colorPick() + f"{i.type}")
+                if i.type == "attack":
+                    typeName = "DMG"
+                elif i.type == "heal":
+                    typeName = "Health"
+                print(Fore.WHITE + f"{counter}: ", Fore.YELLOW + f"{i.name}", Fore.WHITE + "||", Fore.BLUE + f"Cost: {i.manaCost}", Fore.WHITE + "||" ,  colorPick() + f"+{i.amount} {typeName}")
                 counter += 1
                 
             specialChoice = int(input(Fore.WHITE + "\nWhich special do you wanna useeeeeee? "))
@@ -239,18 +243,19 @@ class Player:
         return incomingDamage
    
     def storage(self):
-        if not hasattr(self, "items"):
+        if not hasattr(self, "items\n"):
             self.items = []
 
         while True:
-            print("\n===== STORAGE MENU =====")
-            print("1. Check Stats")
-            print("2. Remove item")
-            print("3. View all items")
-            print("4. Use an item")
-            print("5. Attach / Detach Armor")
-            print("6. Attach / Detach Weapon")
-            print("7. Exit storage")
+            print("")
+            print(Back.LIGHTCYAN_EX + "===== STORAGE MENU ===== " + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "1. Check Stats           " + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "2. Remove item           " + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "3. View all items        " + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "4. Use an item           " + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "5. Attach / Detach Armor " + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "6. Attach / Detach Weapon" + Back.RESET)
+            print(Back.LIGHTBLUE_EX + "7. Exit storage          " + Back.RESET)
 
             choice = input("> ").strip()
 

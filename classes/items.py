@@ -1,5 +1,6 @@
 from classes.player.armor import Armor
 from classes.player.weapon import Weapon
+from colorama import Fore, Back, Style
 
 
 class StoreItems:
@@ -18,7 +19,8 @@ class StoreItems:
         manaCost,
         weapon = False,
         cosmetic = False,
-        durability = None
+        durability = None,
+        addMana = False
     ):
         self.name = name
         self.price = price
@@ -33,6 +35,7 @@ class StoreItems:
         self.weapon = weapon
         self.cosmetic = cosmetic
         self.durability = durability
+        self.addmana = addMana
 
     def use(self, user, target):
         """
@@ -43,14 +46,17 @@ class StoreItems:
             if self.damage:
                 target.health -= self.amount
                 user.mana -= self.manaCost
-                print("New mana total: ", user.mana)
+                print(Fore.BLUE + f"New mana total: {user.mana}")
                 return self.amount  # return damage done
             elif self.heal:
                 user.health += self.amount
                 user.mana -= self.manaCost
-                print("New mana total: ", user.mana)
-                print("new health total: ", user.health)
+                print(Fore.BLUE + f"New mana total: {user.mana}")
+                print(Fore.GREEN + f"New health total:  {user.health}")
                 return 0
+            elif self.addmana:
+                user.mana += self.amount
+                print(Fore.BLUE + f"New mana total: {user.mana}")
 
             else:
                 return 0
@@ -67,6 +73,7 @@ class StoreItems:
 class CaseItem:
     def __init__(self, caseName):
         self.name = caseName
+        self.amount = 0
 
     def openCase(self, player):
         from places.casino.CaseOpenings import openCase
