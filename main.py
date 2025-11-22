@@ -3,7 +3,7 @@ from classes.player.createPlayer import Player
 import os
 
 
-mainCharacter = Player("warrior", "blue", "Greg" )
+mainCharacter = Player("boat man", "blue", "Greg" )
 #mainCharacter = characterBuildIntro()      
 print("Part 1")                                                                                                      
 fightNum = 0

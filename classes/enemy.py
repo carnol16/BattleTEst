@@ -83,7 +83,7 @@ class Boss(Enemy):
             self.flying = False
             self.special = (
                 Special("Finger Guns", "attack", True, False, 20, 45),
-                Special("Poppers", "heal", False, True, 200, 75)
+                Special("Poppers", "heal", False, True, 100, 75)
                 )
             self.drop = ("gold", "gold", "gold", "gold", "golds") + self.special
             
@@ -96,7 +96,7 @@ class Boss(Enemy):
                 Special("Vtuber Stacy Body Pillow", "attack", True, False, 35, 60),
                 Special("Snacks of Various Tasty", "heal", False, True, random.randint(10, 100), random.randint(10, 30))
                 )
-            self.drop = ("gold", "gold", "gold", "gold", "golds") + self.special
+            self.drop = ("gold", "gold", "gold", "gold", "gold") + self.special
         
         
         if kind == "STACY MOM":

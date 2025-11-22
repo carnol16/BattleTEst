@@ -91,7 +91,7 @@ class Player:
             print(Fore.WHITE + f"Base Defense: ", self.defense)
             print("Armor: None")
         else:
-            print(f"Base Defense: ", self.damage - self.armor.amount)
+            print(f"Base Defense: ", self.armor.amount)
             print(f"Armor: {self.armor.name} || DEF: +{self.armor.amount} || DUR: {self.armor.durability}")
         if self.weapon is None:
             print(Fore.RED + f"Base Damage: ", self.damage)
@@ -206,6 +206,7 @@ class Player:
                     self.armor.durability = 0
                     print(f"\n{self.armor.name} broke!")
                     self.armor.detach(self)
+                    self.items.remove(len(self.items)-1)
 
                 return reducedDamage
 
@@ -243,11 +244,11 @@ class Player:
         return incomingDamage
    
     def storage(self):
-        if not hasattr(self, "items\n"):
-            self.items = []
+
 
         while True:
-            print("")
+
+            print(Fore.WHITE + "")
             print(Back.LIGHTCYAN_EX + "===== STORAGE MENU ===== " + Back.RESET)
             print(Back.LIGHTBLUE_EX + "1. Check Stats           " + Back.RESET)
             print(Back.LIGHTBLUE_EX + "2. Remove item           " + Back.RESET)
@@ -262,6 +263,7 @@ class Player:
             # 1. CHECK SPACE
             if choice == "1":
                 self.myStats()
+                
 
             # 2. REMOVE ITEM
             elif choice == "2":
@@ -413,6 +415,7 @@ class Player:
         freeSpace = self.space - len(self.items)
         if freeSpace > 0:
             self.items.append(addItem)
+            print("SPACE:", self.space, "CURRENT ITEMS:", len(self.items))
         else:
             print("sorry baddie, no space")
             dropItem = input("would you like to dispose of something??? ")

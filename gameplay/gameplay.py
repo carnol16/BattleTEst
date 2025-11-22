@@ -357,14 +357,14 @@ def bossBattle(mainCharacter, fightNum):
 
     # GET THE DROP
     if mainCharacter.badBoy == False:
-        mainCharacter.wallet += random.randint(0, 15)
+        mainCharacter.wallet += random.randint(10, 30)
         itemDropped = enemy.getDrop()
 
         if itemDropped == "gold":
             mainCharacter.wallet += random.randint(5, 30)
 
         
-        elif itemDropped.specials == True:
+        else:
             mainCharacter.attacks.append(itemDropped)
 
 

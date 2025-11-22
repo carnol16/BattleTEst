@@ -45,6 +45,15 @@ class Armor:
             print("Inventory full! Armor dropped on the ground!")
 
         user.armor = None
+        
+    def repairCost(self):
+        """Formula for repair cost."""
+        missing = 100 - self.durability
+        return missing * 2  # 2 coins per durability point (change as needed)
+
+    def repair(self):
+        """Repair to full durability."""
+        self.durability = 100
 
 
     

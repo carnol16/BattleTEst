@@ -174,7 +174,55 @@ def openStore(mainCharacter):
                         print("Invalid index.")
 
         elif choice == 2:
-            print("sorry we can't buy your trash right now")
+            if not mainCharacter.items:
+                print("\nYou have nothing to sell!")
+                continue
+
+            print("\n===== SELL ITEMS =====")
+            for i, item in enumerate(mainCharacter.items):
+                print(f"{i}: {item.name}")
+
+            try:
+                idx = int(input("\nEnter index of item to sell: ").strip())
+                if idx < 0 or idx >= len(mainCharacter.items):
+                    print("Invalid index.")
+                    continue
+
+                itemToSell = mainCharacter.items[idx]
+
+                # CASES SELL AT MARKET VALUE
+                if "Case" in itemToSell.name:
+                    market = csPriceChecker()
+                    caseInfo = market.getItem(itemToSell.name)
+
+                    if caseInfo.price is not None:
+                        sellPrice = int(caseInfo.price * 10)  # same multiplier used when buying
+                    else:
+                        sellPrice = 10  # fallback if API fails
+
+                    print(f"\nMarket price detected for {itemToSell.name}: {sellPrice}")
+
+                else:
+                    # Regular items sell for 50% price
+                    if hasattr(itemToSell, "price"):
+                        sellPrice = int(itemToSell.price * 0.5)
+                    else:
+                        sellPrice = 5
+
+                confirm = input(f"Sell {itemToSell.name} for {sellPrice}? (yes/no): ").lower()
+                if confirm != "yes":
+                    print("Sell canceled.")
+                    continue
+
+                del mainCharacter.items[idx]
+                mainCharacter.wallet += sellPrice
+
+                print(f"Sold {itemToSell.name} for {sellPrice} coins!")
+
+            except ValueError:
+                print("Invalid input.")
+
+         
 
         elif choice == 3:
             print("Thanks for stopping by!!!")

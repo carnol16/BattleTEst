@@ -33,7 +33,33 @@ def openBlacksmith(mainCharacter):
 
         # REPAIR
         elif blacksmithChoice == "2":
-            print("Repair system coming soon...")
+            if not mainCharacter.armor:
+                print("You have no armor equipped.")
+                continue
+
+            arm = mainCharacter.armor
+            print(f"\nArmor: {arm.name}")
+            print(f"Durability: {arm.durability}")
+
+            if arm.durability == 100:
+                print("Your armor does not need repairs.")
+                continue
+
+            cost = arm.repairCost()
+            print(f"Repair cost: {cost} coins")
+
+            confirm = input("Repair armor? (yes/no): ").lower()
+            if confirm != "yes":
+                continue
+
+            if mainCharacter.wallet < cost:
+                print("Not enough coins!")
+                continue
+
+            mainCharacter.wallet -= cost
+            arm.repair()
+
+            print(f"{arm.name} has been fully repaired!")
             continue
 
 
