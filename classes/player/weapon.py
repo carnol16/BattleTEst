@@ -23,8 +23,8 @@ class Weapon:
 
     def attach(self, user):
         if user.weapon:
-            print(f"Removing old wepaon: {user.weapon.name}")
-
+            user.items.append(user.weapon)
+            print(f"{self.name} was placed into your inventory.")
         user.weapon = self
         user.damage += self.amount
         print(f"{self.name} equipped! Damage increased by {self.amount}.")

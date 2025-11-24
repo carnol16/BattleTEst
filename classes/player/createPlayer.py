@@ -438,6 +438,67 @@ class Player:
                 print("your loss:( ")      
     
 
+class NPC(Player):
 
+    def __init__(self, type, color, name, personality = None):
+        super().__init__(type, color, name)
+
+        # Extra NPC-only attributes
+        self.personality = personality   # "aggressive", "healer", "tank", etc.
+        self.isNPC = True
+        
+        if name == "Monty":
+            self.health = 200
+            self.damage = 20
+            self.defense = 8
+            self.space = 1
+            self.attacks = [
+                Special("CM Punk UFC Type Move ", "attack", True, False, 10, 30),
+                Special("Super Soaker 9000", "attack", True, False, 45, 45),
+            ] 
+            self.personality = "tank"
+        
+        elif name == "Parim the Iguana":
+            self.health = 100
+            self.damage = 8
+            self.defense = 6
+            self.space = 6
+            self.attacks = [
+                Special("Kisses from the Overlords", "heal", True, False, 24, 10),
+                Special("Licks from the Posseum", "heal", True, False, 12, 5),
+            ] 
+            self.personality = "healer"
+            
+                
+
+    def chooseAction(self, mainCharacter, enemy):
+        
+        if self.personality == "healer":
+            if mainCharacter.health < 40:
+                success = random.randint(1,100)
+                if success % 3 == 0:
+                    self.a
+            else:
+                return 0
+        elif self.personality == "tank":
+            success = random.randint(1,100)
+            if success % 3 == 0:
+                attack_moves = [sp for sp in self.attacks if sp.type == "attack"]
+                if attack_moves:
+                     dmg = attack_moves[random.randint(1,3)].use(self, enemy)
+            else:
+                dmg = self.damage
+            return dmg
+        return 0
+
+            
+            
+            
+
+    def attack(self, success, option, enemy, mainCharacter):
+        """
+        Override Player.attack so NPC never uses input().
+        """
+        return self.chooseAction(mainCharacter, enemy)
 
 
