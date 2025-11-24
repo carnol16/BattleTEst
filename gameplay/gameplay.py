@@ -7,17 +7,12 @@ from places.casino.CasinoOpen import openCasino
 from places.blacksmith.BlackSmithOpen import openBlacksmith
 from classes.player.createPlayer import Player
 from colorama import Fore, Back, Style
-import vlc
 import time
 import textwrap
+from audioMixer import SoundManager
 
-intro = r"audio\STACYMOM.mp3"
 
-playerCreate = vlc.MediaPlayer(intro)
-
-# Enable looping
-playerCreate.set_media(vlc.Media(intro))
-
+sm = SoundManager()
 
 story = """
 In the pastel-paved suburb of Lollipop Circle, a place where gumdrop mailboxes cheerfully wave at passersby and street lamps occasionally sparkle with glitter, lived Stacy—a towering goth girl with a heart big enough to hug a dragon and eyeliner sharp enough to slice a villain in half.
@@ -52,22 +47,20 @@ line_delay = 0.15     # delay between lines
 # FUNCTION TO SCROLL TEXT
 def type_line(text):
     for char in text:
-        chosenColor = random.choice([Fore.WHITE, Fore.GREEN, Fore.BLACK, Fore.RED])
+        chosenColor = random.choice([Fore.WHITE, Fore.GREEN, Fore.BLUE, Fore.RED, Fore.MAGENTA])
         print(chosenColor + char, end='', flush=True)
         time.sleep(delay)
     print()  # new line
     time.sleep(line_delay)
 
 
-
-
 def characterBuildIntro():
-    playerCreate.play()
+    sm.play_music("STACYMOM")
     wrapped = textwrap.fill(story, width=line_width)
     for line in wrapped.split('\n'):
         type_line(line)
 
-    print(
+    print( Fore.WHITE + 
     r"""
 :%    @*++++++++@  .@                                                                
                                       @: @        @   @=:-*%*:         :*#=* %                                                              
@@ -213,7 +206,7 @@ def characterBuildIntro():
 
     print("Now we are ready for our little journey!")
 
-    playerCreate.stop()
+    sm.fadeout_music(1000)  
     return Player(playerType, color, name)
 
 def enemyBattle(mainCharacter, fightNum):
@@ -480,3 +473,5 @@ def postCombat(mainCharacter):
     else:
         print("\nYOU THOUGHT! Hope you learned your lesson silly goose.\n\n")
         mainCharacter.badBoy = False
+        
+        

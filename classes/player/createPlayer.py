@@ -4,9 +4,11 @@ from .specials import Special
 from classes.items import StoreItems
 from colorama import Fore, Back, Style
 from PIL import Image
-import vlc
-class Player:
+from  audioMixer import SoundManager
+import images.openPicture as img
 
+sm = SoundManager()
+class Player:
 
     def __init__(self, type, color, name):
         self.type = type
@@ -208,7 +210,7 @@ class Player:
                     self.armor.durability = 0
                     print(f"\n{self.armor.name} broke!")
                     self.armor.detach(self)
-                    self.items.remove(len(self.items)-1)
+                    self.items.remove(self)
 
                 return reducedDamage
 
@@ -246,18 +248,11 @@ class Player:
         return incomingDamage
    
     def storage(self):
-        music = r"audio\storage.mp3"
 
-        musicPlayer = vlc.MediaPlayer(music)
-
-        # Enable looping
-        musicPlayer.set_media(vlc.Media(music))
-        musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop 
-        image_path = r"images\storage.jpg" 
-        musicPlayer.play()
-
-        img = Image.open(image_path)
-        img.show()
+        
+        imagePath = r"images/storage.jpg" 
+        img_window = img.openIMG(imagePath)
+        sm.play_music("storage")
 
 
         while True:
@@ -420,7 +415,9 @@ class Player:
             # 7. EXIT
             elif choice == "7":
                 print("Exiting storage.")
-                musicPlayer.stop()
+                if img_window:
+                    img_window.destroy()
+                sm.fadeout_music(1500)  # fade out over 1.5 secs
                 break
 
             else:
@@ -450,8 +447,7 @@ class Player:
                 self.items.append(addItem)
                 
             else:
-                print("your loss:( ")      
-    
+                print("your loss:( ")          
 
 class NPC(Player):
 

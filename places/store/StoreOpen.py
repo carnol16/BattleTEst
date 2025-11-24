@@ -8,28 +8,24 @@ from classes.priceGrab import marketItem
 from classes.items import CaseItem
 from PIL import Image
 import time
-import vlc
+from audioMixer import SoundManager
+import images.openPicture as img
+
+sm = SoundManager()
 
 
-image_path = r"images\bigTop.jpg"
-img = Image.open(image_path)
+imagePath = r"images/bigTop.jpg"
 
-
-music = [r"audio\shop1.mp3", r"audio\shop2.mp3", r"audio\shop3.mp3"]
+music = ["shop1", "shop2", "shop3"]
 
 
 
 def openStore(mainCharacter):
-
+    img_window = img.openIMG(imagePath)
     pickedMusic = random.choice(music)
-    musicPlayer = vlc.MediaPlayer(pickedMusic)
-    musicPlayer.set_media(vlc.Media(pickedMusic))
-    musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop
-    musicPlayer.play()
-
-
+    
+    sm.play_music(pickedMusic)
     print(f"\nWELCOME TO BIG TOP {mainCharacter.name}!")
-    img.show()
 
     caseChoices = [
         "Chroma Case",
@@ -245,7 +241,10 @@ def openStore(mainCharacter):
 
         elif choice == 3:
             print("Thanks for stopping by!!!")
-            musicPlayer.stop()
+            sm.fadeout_music(1000)
+            if img_window:
+                img_window.destroy()
+
             return
 
         else:

@@ -6,28 +6,20 @@ from classes.player.armor import Armor
 from classes.player.weapon import Weapon
 from classes.player.specials import Special
 from places.casino.BlackJack import blackjack
-import vlc
-from PIL import Image 
-
-music = r"audio\switch.mp3"
-
-musicPlayer = vlc.MediaPlayer()
-
-# Enable looping
-musicPlayer.set_media(vlc.Media(music))
-musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop
+from audioMixer import SoundManager
+import images.openPicture as img
 
 
+sm = SoundManager()
+
+imagePath = r"images/moon.jpeg"
 
 
-image_path = r"images\moon.jpeg"
-
-img = Image.open(image_path)
 
 
 def openCasino(mainCharacter):
-    img.show()
-    musicPlayer.play()
+    sm.play_music("casino")
+    img_window = img.openIMG(imagePath)
     """
     Main casino loop.
     Handles:
@@ -76,14 +68,6 @@ def openCasino(mainCharacter):
 
         elif casinoChoice == "2":
 
-            caseOpenSnd = r"audio/caseOpen.mp3"
-
-            caseOpen = vlc.MediaPlayer(caseOpenSnd)
-
-            # Enable looping
-            musicPlayer.set_media(vlc.Media(caseOpenSnd))
-            musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop 
-            
             # Get indices of all CaseItems in inventory  
            # OPTION 2: Open Cases
             case_indices = [i for i, item in enumerate(mainCharacter.items) if isinstance(item, CaseItem)]
@@ -108,11 +92,11 @@ def openCasino(mainCharacter):
 
             actual_index = case_indices[chosen_index]
             case = mainCharacter.items[actual_index]
-
+            sm.play_sfx("caseOpen")
             # Spinner animation
             print(f"\nOpening {case.name}", end="")
-            caseOpen.play()
-            for _ in range(30):
+
+            for _ in range(17):
                 print(".", end="", flush=True)
                 time.sleep(0.5)
             print()
@@ -127,8 +111,11 @@ def openCasino(mainCharacter):
         # Option 3: Leave Casino
         elif casinoChoice == "3":
             print("Leaving the casino...")
-            musicPlayer.stop()
-            return  # exit casino
+            sm.fadeout_music(1000)
+            # Destroy the image window automatically
+            if img_window:
+                img_window.destroy()
+            return
 
         # Invalid input
         else:

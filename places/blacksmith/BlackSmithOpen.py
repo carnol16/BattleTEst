@@ -1,32 +1,22 @@
 from classes.items import StoreItems
 from .Build import craftableItems, build
+import tkinter
 from PIL import Image
 import time
-import vlc
+from audioMixer import SoundManager
+import images.openPicture as img
+
+sm = SoundManager()
+
+imagePath = r"images/blacksmith.jpg" 
 
 
 
-image_path = r"images\blacksmith.jpg" 
-
-img = Image.open(image_path)
-
-music = r"audio\blacksmith.mp3"
-
-musicPlayer = vlc.MediaPlayer(music)
-
-# Enable looping
-musicPlayer.set_media(vlc.Media(music))
-musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop
 
 def openBlacksmith(mainCharacter):
-    musicPlayer.play()
-    
-    try:
-        img.show()
-    except FileNotFoundError:
-        print("Error: Image file not found. Please check the path.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    sm.play_music("blacksmith")
+    img_window = img.openIMG(imagePath)
+
     while True:
         print(f"\nYou have {mainCharacter.wallet} monkey money.")
         print("\n--- BLACKSMITH MENU ---")
@@ -97,7 +87,9 @@ def openBlacksmith(mainCharacter):
         # EXIT
         elif blacksmithChoice == "4":
             print("You leave the blacksmith.")
-            musicPlayer.stop()
+            sm.fadeout_music(1000)        
+            if img_window:
+                img_window.destroy()    
             break
 
         else:
