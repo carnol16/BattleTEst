@@ -6,8 +6,28 @@ from classes.player.armor import Armor
 from classes.player.weapon import Weapon
 from classes.player.specials import Special
 from places.casino.BlackJack import blackjack
+import vlc
+from PIL import Image 
+
+music = r"audio\switch.mp3"
+
+musicPlayer = vlc.MediaPlayer()
+
+# Enable looping
+musicPlayer.set_media(vlc.Media(music))
+musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop
+
+
+
+
+image_path = r"images\moon.jpeg"
+
+img = Image.open(image_path)
+
 
 def openCasino(mainCharacter):
+    img.show()
+    musicPlayer.play()
     """
     Main casino loop.
     Handles:
@@ -55,6 +75,15 @@ def openCasino(mainCharacter):
         # Option 2: Open Cases
 
         elif casinoChoice == "2":
+
+            caseOpenSnd = r"audio/caseOpen.mp3"
+
+            caseOpen = vlc.MediaPlayer(caseOpenSnd)
+
+            # Enable looping
+            musicPlayer.set_media(vlc.Media(caseOpenSnd))
+            musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop 
+            
             # Get indices of all CaseItems in inventory  
            # OPTION 2: Open Cases
             case_indices = [i for i, item in enumerate(mainCharacter.items) if isinstance(item, CaseItem)]
@@ -82,7 +111,8 @@ def openCasino(mainCharacter):
 
             # Spinner animation
             print(f"\nOpening {case.name}", end="")
-            for _ in range(3):
+            caseOpen.play()
+            for _ in range(30):
                 print(".", end="", flush=True)
                 time.sleep(0.5)
             print()
@@ -97,6 +127,7 @@ def openCasino(mainCharacter):
         # Option 3: Leave Casino
         elif casinoChoice == "3":
             print("Leaving the casino...")
+            musicPlayer.stop()
             return  # exit casino
 
         # Invalid input

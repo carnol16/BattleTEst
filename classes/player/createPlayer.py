@@ -3,6 +3,8 @@ from .armor import Armor
 from .specials import Special
 from classes.items import StoreItems
 from colorama import Fore, Back, Style
+from PIL import Image
+import vlc
 class Player:
 
 
@@ -244,6 +246,18 @@ class Player:
         return incomingDamage
    
     def storage(self):
+        music = r"audio\storage.mp3"
+
+        musicPlayer = vlc.MediaPlayer(music)
+
+        # Enable looping
+        musicPlayer.set_media(vlc.Media(music))
+        musicPlayer.get_media().add_option("input-repeat=-1")  # -1 = infinite loop 
+        image_path = r"images\storage.jpg" 
+        musicPlayer.play()
+
+        img = Image.open(image_path)
+        img.show()
 
 
         while True:
@@ -406,6 +420,7 @@ class Player:
             # 7. EXIT
             elif choice == "7":
                 print("Exiting storage.")
+                musicPlayer.stop()
                 break
 
             else:

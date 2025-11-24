@@ -7,9 +7,66 @@ from places.casino.CasinoOpen import openCasino
 from places.blacksmith.BlackSmithOpen import openBlacksmith
 from classes.player.createPlayer import Player
 from colorama import Fore, Back, Style
+import vlc
+import time
+import textwrap
+
+intro = r"audio\STACYMOM.mp3"
+
+playerCreate = vlc.MediaPlayer(intro)
+
+# Enable looping
+playerCreate.set_media(vlc.Media(intro))
+
+
+story = """
+In the pastel-paved suburb of Lollipop Circle, a place where gumdrop mailboxes cheerfully wave at passersby and street lamps occasionally sparkle with glitter, lived Stacy—a towering goth girl with a heart big enough to hug a dragon and eyeliner sharp enough to slice a villain in half.
+Her neighbors were used to seeing her stomp down the sidewalk in her platform boots, black dress swishing like a storm cloud trying very hard to be dramatic in a place where even the grass smelled faintly of cotton candy.
+But today—oh today—Stacy was on a mission.
+
+The Magical Stacy’s Mom (a mysterious artifact shaped like a glowing heart with overwhelmingly MILF-like energy for reasons no one fully understands) had been targeted by a long list of villains:
+The Bubblegum Bandit…
+Sir Smooch-A-Lot…
+Mistress Glitterdoom…
+The Swole Necromancer of Flexington…
+And like twelve more weirdos.
+
+Stacy couldn’t defend it alone.
+
+She needed a mans!!!
+Not just any mans…
+A heroic mans…
+A cute mans…
+A mans who could lift heavy things and maybe her too.
+A mans who respected a girl with black lipstick and a scythe collection.
+
+Thus began her flirt-fueled recruitment tour.
+"""
+
+# SETTINGS
+line_width = 70       # wrap width
+delay = 0.075         # delay per character
+line_delay = 0.15     # delay between lines
+
+
+# FUNCTION TO SCROLL TEXT
+def type_line(text):
+    for char in text:
+        chosenColor = random.choice([Fore.WHITE, Fore.GREEN, Fore.BLACK, Fore.RED])
+        print(chosenColor + char, end='', flush=True)
+        time.sleep(delay)
+    print()  # new line
+    time.sleep(line_delay)
+
+
 
 
 def characterBuildIntro():
+    playerCreate.play()
+    wrapped = textwrap.fill(story, width=line_width)
+    for line in wrapped.split('\n'):
+        type_line(line)
+
     print(
     r"""
 :%    @*++++++++@  .@                                                                
@@ -123,7 +180,7 @@ def characterBuildIntro():
     name = input("Welcome to the silly land of Lollipop Circle!!! What is your name: ")
 
     if len(name) <= 5:
-        print("thats a good name, great choice\n")
+        print(Fore.WHITE + "thats a good name, great choice\n")
     elif len(name) <= 10:
         print("Not a great choice but it will do\n")
     else:
@@ -156,6 +213,7 @@ def characterBuildIntro():
 
     print("Now we are ready for our little journey!")
 
+    playerCreate.stop()
     return Player(playerType, color, name)
 
 def enemyBattle(mainCharacter, fightNum):
