@@ -2,7 +2,7 @@ import pygame
 import os
 
 class SoundManager:
-    def __init__(self, base_folder="audio", sound_enabled=True):
+    def __init__(self, base_folder="audio", sound_enabled=False):
         pygame.mixer.init()
         self.sound_enabled = sound_enabled
         self.base_folder = base_folder
@@ -55,6 +55,9 @@ class SoundManager:
         if name not in self.music:
             print(f"[ERROR] Music '{name}' not found")
             return
+        if not self.sound_enabled:
+            print(f"(disabled) would play Music: {name}")
+            return       
 
         pygame.mixer.music.load(self.music[name])
         pygame.mixer.music.play(loops, fade_ms=fade_ms)

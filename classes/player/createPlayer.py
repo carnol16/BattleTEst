@@ -415,8 +415,7 @@ class Player:
             # 7. EXIT
             elif choice == "7":
                 print("Exiting storage.")
-                if img_window:
-                    img_window.destroy()
+                img.openIMG(destroy=True)
                 sm.fadeout_music(1500)  # fade out over 1.5 secs
                 break
 

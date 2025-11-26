@@ -1,33 +1,32 @@
-import tkinter as tk
-from PIL import Image, ImageTk
+import subprocess
+import sys, os
 
-def openIMG(imagePath=None):
-    # Ensure a root exists
-    root = tk._default_root
-    if root is None:
-        root = tk.Tk()
-        root.withdraw()  # hide the root window
 
-    # Create new Toplevel window
-    window = tk.Toplevel(root)
-    window.title("Current Location")
+_current_image_process = None
 
-    try:
-        pilImage = Image.open(imagePath)
-    except FileNotFoundError:
-        print(f"Shit Broke {imagePath}")
-        window.destroy()
-        return None
+def openIMG(imagePath=None, destroy=False):
+    global _current_image_process
 
-    tkImage = ImageTk.PhotoImage(pilImage)
-    label = tk.Label(window, image=tkImage)
-    label.image = tkImage  # keep reference
-    label.pack(padx=10, pady=10)
+    # If destroy=True → close the running subprocess
+    if destroy:
+        if _current_image_process:
+            _current_image_process.terminate()
+            _current_image_process = None
+        return
 
-    # Allow user to manually close
-    #window.protocol("WM_DELETE_WINDOW", window.destroy)
+    # Destroy previous image if one is open
+    if _current_image_process:
+        _current_image_process.terminate()
 
-    return window  # return the window reference
+    script_path = os.path.join(os.path.dirname(__file__), "openPicture_subprocess.py")
+    abs_image_path = os.path.abspath(imagePath)
+
+    # Start Tk process and keep the handle
+    _current_image_process = subprocess.Popen([
+        sys.executable,
+        script_path,
+        abs_image_path
+    ])
 
 
         

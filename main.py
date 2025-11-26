@@ -1,6 +1,9 @@
 from gameplay.gameplay import characterBuildIntro, enemyBattle, postCombat, bossBattle
 from classes.player.createPlayer import Player
 import os
+from audioMixer import SoundManager
+
+SoundManager(sound_enabled = False)
 
 
 mainCharacter = Player("boat man", "blue", "Greg" )

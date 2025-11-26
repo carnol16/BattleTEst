@@ -88,8 +88,8 @@ def openBlacksmith(mainCharacter):
         elif blacksmithChoice == "4":
             print("You leave the blacksmith.")
             sm.fadeout_music(1000)        
-            if img_window:
-                img_window.destroy()    
+            img.openIMG(destroy=True)
+ 
             break
 
         else:

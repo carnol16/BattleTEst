@@ -10,6 +10,7 @@ from colorama import Fore, Back, Style
 import time
 import textwrap
 from audioMixer import SoundManager
+from places.restaurant.restaurantOpen import openResturant
 
 
 sm = SoundManager()
@@ -436,7 +437,8 @@ def postCombat(mainCharacter):
             print("2. Casino")
             print("3. Blacksmith")
             print("4. Storage")
-            print("5. Next Fight")
+            print("5. Restraurant")
+            print("6. Next Fight")
 
             stop = input("> ").strip()
 
@@ -459,8 +461,13 @@ def postCombat(mainCharacter):
                 mainCharacter.storage()
 
                 continue
-
+            
             elif stop.lower() == "5":
+                openResturant(mainCharacter)
+
+                continue
+
+            elif stop.lower() == "6":
                 print("\nYou continue your journey...\n\n")
                 break
 

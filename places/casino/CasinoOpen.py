@@ -113,8 +113,7 @@ def openCasino(mainCharacter):
             print("Leaving the casino...")
             sm.fadeout_music(1000)
             # Destroy the image window automatically
-            if img_window:
-                img_window.destroy()
+            img.openIMG(destroy=True)
             return
 
         # Invalid input
