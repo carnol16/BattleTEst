@@ -22,6 +22,8 @@ class Player:
         self.armor = None
         self.badBoy = False
         self.increaseDefend = 0
+        self.partyMembers = []
+        self.activeParty = None
 
         
         
@@ -55,12 +57,12 @@ class Player:
             self.space = 5
             self.attacks = [
                 Special("Plunder", "attack", True, False, 25, 10),
-                Special("Cannon BRRRRR", "attack", True, False, 100, 50),
+                Special("Cannon BRRRRR", "attack", True, False, 100, 60),
                 Special("Motorboating", "heal", False, True, 50, 40)
             ]
             
         elif type == "ninja":
-            self.health = 80
+            self.health = 120
             self.damage = 7
             self.defense = 15
             self.space = 1
@@ -73,7 +75,7 @@ class Player:
         else:
             self.health = 10
             self.damage = 1
-            self.defense = 0
+            self.defense = -10
             self.space = 2
             self.attacks = [
                 Special("depression", "attack", True, False, -10, 10)
@@ -89,6 +91,7 @@ class Player:
     def myStats(self):
         avalibleSpace = self.space - len(self.items) 
         print(f"Here is {self.name}'s silly stats\n")
+        
         print(Fore.GREEN + f"Health: {self.health}")
         print(Fore.BLUE + f"Mana: {self.mana}")
         if self.armor is None:
@@ -104,7 +107,11 @@ class Player:
             print(Fore.BLUE + f"Base Damage:  {self.damage - self.weapon.amount}")
             print(Fore.RED + f"Weapon: {self.weapon.name} || DMG: +{self.weapon.amount}")
             print(Fore.RED + f"Total Damage: {self.damage + self.weapon.amount}")
-        print(f"Available Space {avalibleSpace}")
+        print(f"Available Space {avalibleSpace}\n")
+        if self.activeParty != None:
+            print(f"Party Member: {self.activeParty.name}", Fore.GREEN + f"Health: {self.activeParty.health}" )
+        else:
+            print("Party Member: You a loner lol")
 
     def attack(self, success, option, enemy):
         choice = option
@@ -446,69 +453,85 @@ class Player:
                 self.items.append(addItem)
                 
             else:
-                print("your loss:( ")          
+                print("your loss:( ")    
+        
+
+      
 
 class NPC(Player):
+    def __init__(self, npc_type, color):
+        # Prevent Player.__init__ from overwriting NPC stats
+        super().__init__("npc", color, npc_type)
 
-    def __init__(self, type, color, name, personality = None):
-        super().__init__(type, color, name)
+        self.npc_type = npc_type
 
-        # Extra NPC-only attributes
-        self.personality = personality   # "aggressive", "healer", "tank", etc.
-        self.isNPC = True
-        
-        if name == "Monty":
-            self.health = 200
-            self.damage = 20
-            self.defense = 8
-            self.space = 1
-            self.attacks = [
-                Special("CM Punk UFC Type Move ", "attack", True, False, 10, 30),
-                Special("Super Soaker 9000", "attack", True, False, 45, 45),
-            ] 
-            self.personality = "tank"
-        
-        elif name == "Parim the Iguana":
+        # Assign NPC-specific stats
+        if npc_type == "Monty":
             self.health = 100
-            self.damage = 8
-            self.defense = 6
-            self.space = 6
-            self.attacks = [
-                Special("Kisses from the Overlords", "heal", True, False, 24, 10),
-                Special("Licks from the Posseum", "heal", True, False, 12, 5),
-            ] 
-            self.personality = "healer"
-            
-                
+            self.maxHealth = 100
+            self.damage = 5
+            self.defense = 5
+
+            # Monty's attack list
+            self.attacks = [ 
+                            Special("CM Punk UFC Type Move ", "attack", True, False, 10, 0), 
+                            Special("Super Soaker 9000", "attack", True, False, 45, 0)
+                            ]
+
+        elif npc_type == "Parim the Iguana":
+            self.health = 60
+            self.maxHealth = 60
+            self.damage = 0
+            self.defense = 5
+            # Parim is healer
+            self.attacks = [ 
+                            Special("Kisses from the Overlords", "attack", True, False, 24, 0), 
+                            Special("Licks from the Posseum", "attack", True, False, 12, 0)
+                            ]
+
+        # Anything else defaults to harmless NPC
+        else:
+            self.health = 50
+            self.maxHealth = 50
+            self.damage = 1
+            self.defense = 0
+            self.attacks = []
+
+    # -------------------------
+    # NPC DECISION SYSTEM
+    # -------------------------
+
+    # Ensure signature matches Player.attack
+    def attack(self, enemy, mainCharacter):
+        return self.chooseAction(enemy, mainCharacter)
 
     def chooseAction(self, mainCharacter, enemy):
-        
-        if self.personality == "healer":
-            if mainCharacter.health < 40:
-                success = random.randint(1,100)
-                if success % 3 == 0:
-                    self.a
-            else:
-                return 0
-        elif self.personality == "tank":
-            success = random.randint(1,100)
-            if success % 3 == 0:
-                attack_moves = [sp for sp in self.attacks if sp.type == "attack"]
-                if attack_moves:
-                     dmg = attack_moves[random.randint(1,3)].use(self, enemy)
-            else:
-                dmg = self.damage
-            return dmg
-        return 0
+        # Monty = DPS AI
+        if self.npc_type == "Monty" or "Parim the Iguana":
+            attack_moves = [sp for sp in self.attacks if sp.type == "attack"]
+            if attack_moves:
+                # FIXED: random.choice avoids index crashes
+                return random.choice(attack_moves).use(self, enemy)
 
-            
-            
-            
+        # Parim = healer AI
+        if self.npc_type == "korean BBQ":
+            heal_moves = [sp for sp in self.attacks if sp.type == "heal"]
 
-    def attack(self, success, option, enemy, mainCharacter):
-        """
-        Override Player.attack so NPC never uses input().
-        """
-        return self.chooseAction(mainCharacter, enemy)
+            # Heal main character if needed
+            if mainCharacter.health < mainCharacter.maxHealth * 0.7 and heal_moves:
+                return random.choice(heal_moves).use(self, mainCharacter)
+
+            # Otherwise attack
+            attack_moves = [sp for sp in self.attacks if sp.type == "attack"]
+            if attack_moves:
+                return random.choice(attack_moves).use(self, enemy)
+
+        # Default behavior: basic attack (if exists)
+        attack_moves = [sp for sp in self.attacks if sp.type == "attack"]
+        if attack_moves:
+            return random.choice(attack_moves).use(self, enemy)
+
+        return 0  # NPC does nothing
+
 
 

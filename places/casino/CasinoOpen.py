@@ -6,6 +6,7 @@ from classes.player.armor import Armor
 from classes.player.weapon import Weapon
 from classes.player.specials import Special
 from places.casino.BlackJack import blackjack
+from places.casino.horseRacing import race
 from audioMixer import SoundManager
 import images.openPicture as img
 
@@ -18,6 +19,7 @@ imagePath = r"images/moon.jpeg"
 
 
 def openCasino(mainCharacter):
+    musicOn = True
     sm.play_music("casino")
     img_window = img.openIMG(imagePath)
     """
@@ -28,11 +30,16 @@ def openCasino(mainCharacter):
     3. Leaving the casino
     """
     while True:
+        if musicOn == False:
+            sm.play_music("casino")
+            musicOn = True
+            
         print(f"\nYou have {mainCharacter.wallet} monkey money.")
         print("\n--- CASINO MENU ---")
         print("1. Play Blackjack")
         print("2. Open a Case")
-        print("3. Leave Casino")
+        print("3. Horse Racing")
+        print("4. Leave Casino")
 
         casinoChoice = input("What would you like to do? >>> ").strip()
 
@@ -108,8 +115,39 @@ def openCasino(mainCharacter):
 
             # Remove the case
 
-        # Option 3: Leave Casino
+        # Option 3: Horse Racing
         elif casinoChoice == "3":
+            if mainCharacter.wallet <= 0:
+                print("You're broke! You cannot race horses!")
+                continue
+
+            try:
+                wager = int(input("How much do you want to bet? >>> "))
+            except ValueError:
+                print("That's not a valid number.")
+                continue
+
+            if wager <= 0:
+                print("Bet must be more than zero.")
+                continue
+
+            if wager > mainCharacter.wallet:
+                print("You don't have that much money!")
+                continue
+
+            # Play horse racing
+            sm.fadeout_music(1000)
+            time.sleep(1)
+            musicOn = False
+            mainCharacter.wallet = race(mainCharacter.wallet, wager)
+            print(f"Your wallet is now: {mainCharacter.wallet}")
+
+            if mainCharacter.wallet <= 0:
+                print("You're out of money! Leaving Horse Racing...")
+                continue
+
+        # Option 4: Leave Casino
+        elif casinoChoice == "4":
             print("Leaving the casino...")
             sm.fadeout_music(1000)
             # Destroy the image window automatically
@@ -118,5 +156,5 @@ def openCasino(mainCharacter):
 
         # Invalid input
         else:
-            print("Invalid choice. Pick 1, 2, or 3.")
+            print("Invalid choice. Pick 1, 2, 3, or 4.")
 

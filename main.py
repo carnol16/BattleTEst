@@ -1,12 +1,16 @@
 from gameplay.gameplay import characterBuildIntro, enemyBattle, postCombat, bossBattle
-from classes.player.createPlayer import Player
+from classes.player.createPlayer import Player, NPC
 import os
 from audioMixer import SoundManager
+import json
+import datetime
 
 SoundManager(sound_enabled = False)
 
 
-mainCharacter = Player("boat man", "blue", "Greg" )
+mainCharacter = Player("boat man", "blue", "Dmytro" )
+#mainCharacter.activeParty = (NPC("Parim the Iguana", "blue"))
+
 #mainCharacter = characterBuildIntro()      
 print("Part 1")                                                                                                      
 fightNum = 0
@@ -24,3 +28,4 @@ while mainCharacter.health > 0:
         fightNum = enemyBattle(mainCharacter, fightNum)
     
     postCombat(mainCharacter)
+

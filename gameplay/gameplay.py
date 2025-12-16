@@ -1,18 +1,39 @@
 import random
+import socket
+import json
+import datetime
+import time
+import textwrap
+from colorama import Fore, Back, Style
 from classes.enemy import Enemy, Boss
 from classes.player.armor import Armor
 from classes.player.weapon import Weapon
-from places.store.StoreOpen import openStore
 from places.casino.CasinoOpen import openCasino
 from places.blacksmith.BlackSmithOpen import openBlacksmith
 from classes.player.createPlayer import Player
-from colorama import Fore, Back, Style
-import time
-import textwrap
 from audioMixer import SoundManager
 from places.restaurant.restaurantOpen import openResturant
+from classes.player.createPlayer import NPC
 
+# SETTINGS
+line_width = 70       # wrap width
+delay = 0.075         # delay per character
+line_delay = 0.15     # delay between lines
 
+def has_internet():
+    print("Checking internet connection...")
+    try:
+        socket.create_connection(("8.8.8.8", 53), timeout=3)
+        print("Internet detected: Online mode")
+        return True
+    except OSError:
+        print("No internet detected: Offline mode")
+        return False
+
+if has_internet():
+    from places.store.StoreOpen import openStore
+else:
+    from places.store.StoreOpenOffline import openStore
 sm = SoundManager()
 
 story = """
@@ -39,11 +60,6 @@ A mans who respected a girl with black lipstick and a scythe collection.
 Thus began her flirt-fueled recruitment tour.
 """
 
-# SETTINGS
-line_width = 70       # wrap width
-delay = 0.075         # delay per character
-line_delay = 0.15     # delay between lines
-
 
 # FUNCTION TO SCROLL TEXT
 def type_line(text):
@@ -53,7 +69,6 @@ def type_line(text):
         time.sleep(delay)
     print()  # new line
     time.sleep(line_delay)
-
 
 def characterBuildIntro():
     sm.play_music("STACYMOM")
@@ -210,12 +225,49 @@ def characterBuildIntro():
     sm.fadeout_music(1000)  
     return Player(playerType, color, name)
 
+def leaderboardPost(mainCharacter, fightNum):
+    print(f"You got to fight number: {fightNum}!!!")
+    postChoice = input("Would you like to post this to the leader board?")
+
+    
+    entry = {
+        'date': str(datetime.date.today()),
+        'name': mainCharacter.name,
+        'type': mainCharacter.type,
+        'fight_number': fightNum
+    }
+    try:
+        with open('leaderboard.json', 'r') as f:
+            leaderboard = json.load(f)
+    except FileNotFoundError:
+        leaderboard = []
+    leaderboard.append(entry)
+    with open('leaderboard.json', 'w') as f:
+        json.dump(leaderboard, f, indent=4)
+    
+    # Display leaderboard
+    leaderboard.sort(key=lambda x: x['fight_number'], reverse=True)
+    print("\nTop 5 Leaderboard:")
+    for i in range(min(5, len(leaderboard))):
+        e = leaderboard[i]
+        print(f"{i+1}. {e['name']} ({e['type']}) - Fight {e['fight_number']} on {e['date']}")
+    
+    # Find current player's rank
+    for rank, e in enumerate(leaderboard, 1):
+        if (e['date'] == entry['date'] and 
+            e['name'] == entry['name'] and 
+            e['type'] == entry['type'] and 
+            e['fight_number'] == entry['fight_number']):
+            print(f"\nYour position: {rank}. {e['name']} ({e['type']}) - Fight {e['fight_number']} on {e['date']}")
+            break
+
 def enemyBattle(mainCharacter, fightNum):
 
 
     enemy_types = ("goblin", "snake", "turtle", "log", "Razer DAWG")
     enemy_name = random.choice(enemy_types)
     enemy = Enemy(enemy_name)
+    partyMember = mainCharacter.activeParty
 
     print("\nEnemy #" + str(fightNum + 1) + ": " + enemy_name)
 
@@ -230,18 +282,34 @@ def enemyBattle(mainCharacter, fightNum):
             # Enemy attacks
             success = random.randint(0, 100)
             dmg = enemy.attack(success)
+            if mainCharacter.activeParty == None:  
+                reduce = mainCharacter.defend(success, dmg)
 
-            reduce = mainCharacter.defend(success, dmg)
+                mainCharacter.health -= reduce
+                #mainCharacter.armor.durablity -= 1
+                if mainCharacter.health <= 0:
+                    print(Fore.WHITE + f"Enemy hits you for {reduce}! {mainCharacter.name}'s HP = 0")
+                else:
+                    print(Fore.WHITE + f"Enemy hits you for {reduce}! {mainCharacter.name}'s HP = {mainCharacter.health}")
+            elif mainCharacter.activeParty != None:
+                pickedTarget = random.choice([mainCharacter, partyMember])
+                print(f"{enemy_name} chose {pickedTarget.name}")
+                reduce = pickedTarget.defend(success, dmg)
 
-            mainCharacter.health -= reduce
-            # mainCharacter.armor.durablity -= 1
-            if mainCharacter.health <= 0:
-                print(Fore.WHITE + f"Enemy hits you for {reduce}! Your HP = 0")
-            else:
-                print(Fore.WHITE + f"Enemy hits you for {reduce}! Your HP = {mainCharacter.health}")
+                pickedTarget.health -= reduce
+                #mainCharacter.armor.durablity -= 1
+                if pickedTarget.health <= 0:
+                    print(Fore.WHITE + f"Enemy hits {pickedTarget.name} for {reduce}! {pickedTarget.name} HP = 0")
+                else:
+                    print(Fore.WHITE + f"Enemy hits {pickedTarget.name} for {reduce}! {pickedTarget.name} HP = {pickedTarget.health}")
+                
+            
 
         else:
             # Player attacks
+            
+            if mainCharacter.activeParty != None:
+                partyMember.attack(enemy, mainCharacter)
 
             success = random.randint(0, 10)
             print(Fore.WHITE + "")
@@ -269,11 +337,19 @@ def enemyBattle(mainCharacter, fightNum):
                 else:
                     print(f"\nYou hit {enemy_name} for {reduce}! Enemy HP = {enemy.health}")
 
+            
+            
+
         turn += 1
 
         if mainCharacter.health <= 0:
             print("\n\n\nGAME OVER!")
+            leaderboardPost(mainCharacter, fightNum)
             exit()
+        if mainCharacter.activeParty != None:
+            if partyMember.health <= 0:
+                print(f"{partyMember.name} has died:(\nThey have been removed from party")
+                mainCharacter.activeParty = []
     print("\nCongrats!!! You defeated the", enemy_name)
 
     # GET THE DROP
@@ -404,6 +480,7 @@ def bossBattle(mainCharacter, fightNum):
 
         if mainCharacter.health <= 0:
             print("GAME OVER!")
+            leaderboardPost(mainCharacter, fightNum)
             exit()
     print("Congrats!!! You defeated the", enemy_name)
 
@@ -444,7 +521,7 @@ def postCombat(mainCharacter):
 
             if stop.lower() == "1":
                 openStore(mainCharacter)
-
+                    
                 continue
 
             elif stop.lower() == "2":
@@ -481,4 +558,30 @@ def postCombat(mainCharacter):
         print("\nYOU THOUGHT! Hope you learned your lesson silly goose.\n\n")
         mainCharacter.badBoy = False
         
+
+def npcGrab(mainCharacter):
+    npcType = ["Monty", "Parim the Iguana",]
+    
+    npcPicked = random.choice(npcType)
+
+    newPartyMember = NPC(npcPicked, "blue", npcPicked)
+    
+    print(f"{newPartyMember.name} has joined your party!!!")
+    print(f"Here is {newPartyMember.name}'s stats!\n")
+    newPartyMember.myStats()
         
+    if mainCharacter.activeParty == None:
+        mainCharacter.activeParty = newPartyMember
+    else:
+        choice = input(f"Would you like to make {newPartyMember.name} active? (y/n)\n>")
+        
+        if choice.lower() == "y":
+            mainCharacter.activeParty.append(mainCharacter.activeParty)
+            mainCharacter.activeParty = newPartyMember
+            
+        elif choice.lower() == "n":
+            mainCharacter.partyMembers.append(newPartyMember)
+    
+    
+    npcType.remove(npcPicked)
+            

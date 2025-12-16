@@ -93,7 +93,7 @@ class Boss(Enemy):
             self.defense = 8
             self.flying = False
             self.special = (
-                Special("Vtuber Stacy Body Pillow", "attack", True, False, 35, 60),
+                Special("Vtuber Stacy Body Pillow", "attack", True, False, 35, 30),
                 Special("Snacks of Various Tasty", "heal", False, True, random.randint(10, 100), random.randint(10, 30))
                 )
             self.drop = ("gold", "gold", "gold", "gold", "gold") + self.special

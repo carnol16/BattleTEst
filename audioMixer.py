@@ -1,15 +1,20 @@
 import pygame
 import os
 
+musicVol = 0.5
+sfxVol = 0.3
 class SoundManager:
-    def __init__(self, base_folder="audio", sound_enabled=False):
+    def __init__(self, base_folder="audio", sound_enabled=True):
         pygame.mixer.init()
+
+        
         self.sound_enabled = sound_enabled
         self.base_folder = base_folder
 
         self.sfx = {}
         self.music = {}
 
+        
         self.load_audio()
 
     # AUTO-SCANNER
@@ -47,6 +52,8 @@ class SoundManager:
 
         if name in self.sfx:
             self.sfx[name].play()
+            
+            
         else:
             print(f"[ERROR] SFX '{name}' not found")
 
@@ -58,7 +65,7 @@ class SoundManager:
         if not self.sound_enabled:
             print(f"(disabled) would play Music: {name}")
             return       
-
+        pygame.mixer.music.set_volume(musicVol)
         pygame.mixer.music.load(self.music[name])
         pygame.mixer.music.play(loops, fade_ms=fade_ms)
 
