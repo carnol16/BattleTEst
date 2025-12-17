@@ -13,6 +13,7 @@ class SoundManager:
 
         self.sfx = {}
         self.music = {}
+        self.battle = {}
 
         
         self.load_audio()
@@ -39,9 +40,12 @@ class SoundManager:
                 if rel.startswith("music"):
                     # Treat everything in /places/ as MUSIC
                     self.music[key] = full_path
-                else:
+                elif rel.startswith("sfx"):
                     # Everything else is SFX
                     self.sfx[key] = pygame.mixer.Sound(full_path)
+                elif rel.startswith("battle"):
+                    self.music[key] = full_path
+
 
 
     # SOUND EFFECTS
@@ -64,7 +68,7 @@ class SoundManager:
             return
         if not self.sound_enabled:
             print(f"(disabled) would play Music: {name}")
-            return       
+            return
         pygame.mixer.music.set_volume(musicVol)
         pygame.mixer.music.load(self.music[name])
         pygame.mixer.music.play(loops, fade_ms=fade_ms)

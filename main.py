@@ -17,6 +17,8 @@ fightNum = 0
 part = 1
 # GAMEPLAY LOOP
 while mainCharacter.health > 0:
+    
+    mainCharacter.fightNum = fightNum
 
     if fightNum % 5 == 0 and fightNum != 0:
         fightNum = bossBattle(mainCharacter, fightNum)

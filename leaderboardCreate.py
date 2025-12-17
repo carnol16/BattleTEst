@@ -23,7 +23,7 @@ if postChoice.lower() in ['yes', 'y', 'sure']:
         json.dump(leaderboard, f, indent=4)
     
     # Display leaderboard
-    leaderboard.sort(key=lambda x: x['fight_number'], reverse=True)
+    leaderboard.sort(key=lambda x: x.get('fight_number', 0), reverse=True)
     print("\nTop 5 Leaderboard:")
     for i in range(min(5, len(leaderboard))):
         e = leaderboard[i]

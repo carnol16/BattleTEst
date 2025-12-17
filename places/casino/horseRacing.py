@@ -32,6 +32,25 @@ def playableHorse():
     
 def race(wallet, wager):
     sm.play_music("animeHorse")
+    def play_ascii_video(folder_path, fps=30):
+        #sm.play_music("animeHorse")
+        # Get sorted list of text files
+        frames = sorted([f for f in os.listdir(folder_path) if f.endswith('.txt')])
+        
+        frame_duration = 1 / fps
+        
+        for frame_file in frames:
+            with open(os.path.join(folder_path, frame_file), 'r') as f:
+                # Clear the terminal screen
+                print("\033[H\033[J", end="") 
+                # Print the frame
+                print(f.read())
+                
+            time.sleep(0.025)
+
+    # Usage
+    ascii_frames_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../ascii_frames'))
+    play_ascii_video(ascii_frames_path, fps=30)
     totalSpeed = 0
     winner = ""
     raceHorse = playableHorse()
@@ -41,7 +60,7 @@ def race(wallet, wager):
     
     
     for count in range(len(raceHorse)):
-        print(f"{count}. {raceHorse[count].name} chances: {round(float(raceHorse[count].speed / totalSpeed), 2)}% ")
+        print(f"{count}. {raceHorse[count].name} chances: {round(float(raceHorse[count].speed / totalSpeed) * 100, 2)}% ")
     
     playerChoice = int(input("Which horse would you like to bet on (0-4)?\n> "))
 

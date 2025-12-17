@@ -82,7 +82,7 @@ class Boss(Enemy):
             self.defense = 15
             self.flying = False
             self.special = (
-                Special("Finger Guns", "attack", True, False, 20, 45),
+                Special("Finger Guns", "attack", True, False, 20, 15),
                 Special("Poppers", "heal", False, True, 100, 75)
                 )
             self.drop = ("gold", "gold", "gold", "gold", "golds") + self.special

@@ -14,6 +14,25 @@ from classes.player.createPlayer import Player
 from audioMixer import SoundManager
 from places.restaurant.restaurantOpen import openResturant
 from classes.player.createPlayer import NPC
+import threading
+
+class BattleDJ(threading.Thread):
+    def __init__(self, sound_manager, clips):
+        super().__init__()
+        self.sm = sound_manager
+        self.clips = clips
+        self.running = True
+        self.daemon = True  # Ensures audio stops if the main game exits
+
+    def run(self):
+        while self.running:
+            clip = random.choice(self.clips)
+            self.sm.play_music(clip)
+            # Sleep for slightly less than 5s to ensure continuous audio
+            time.sleep(4.9) 
+
+    def stop(self):
+        self.running = False
 
 # SETTINGS
 line_width = 70       # wrap width
@@ -36,6 +55,7 @@ else:
     from places.store.StoreOpenOffline import openStore
 sm = SoundManager()
 
+battleMusic = [f"out{i:03d}" for i in range(753)]
 story = """
 In the pastel-paved suburb of Lollipop Circle, a place where gumdrop mailboxes cheerfully wave at passersby and street lamps occasionally sparkle with glitter, lived Stacy—a towering goth girl with a heart big enough to hug a dragon and eyeliner sharp enough to slice a villain in half.
 Her neighbors were used to seeing her stomp down the sidewalk in her platform boots, black dress swishing like a storm cloud trying very hard to be dramatic in a place where even the grass smelled faintly of cotton candy.
@@ -225,17 +245,13 @@ def characterBuildIntro():
     sm.fadeout_music(1000)  
     return Player(playerType, color, name)
 
+
 def leaderboardPost(mainCharacter, fightNum):
     print(f"You got to fight number: {fightNum}!!!")
     postChoice = input("Would you like to post this to the leader board?")
 
     
-    entry = {
-        'date': str(datetime.date.today()),
-        'name': mainCharacter.name,
-        'type': mainCharacter.type,
-        'fight_number': fightNum
-    }
+    entry = Player.leaderboardPost(mainCharacter, fightNum)
     try:
         with open('leaderboard.json', 'r') as f:
             leaderboard = json.load(f)
@@ -262,7 +278,9 @@ def leaderboardPost(mainCharacter, fightNum):
             break
 
 def enemyBattle(mainCharacter, fightNum):
-
+    
+    dj = BattleDJ(sm, battleMusic)
+    dj.start()
 
     enemy_types = ("goblin", "snake", "turtle", "log", "Razer DAWG")
     enemy_name = random.choice(enemy_types)
@@ -276,6 +294,7 @@ def enemyBattle(mainCharacter, fightNum):
     print(Fore.BLUE + "Current Mana: ", mainCharacter.mana)
 
     # Battle LOOP
+    
     while enemy.health > 0 and mainCharacter.health > 0:
 
         if turn % 2 == 0:
@@ -413,12 +432,17 @@ def enemyBattle(mainCharacter, fightNum):
     else:
         print("WOMP WOMP!\nShouldn't have been a bad boy" + mainCharacter.name)
 
+    dj.stop()
+    sm.fadeout_music(1000)
     mainCharacter.health += 10
     mainCharacter.mana += 15
     fightNum += 1
     return fightNum
 
 def bossBattle(mainCharacter, fightNum):
+    
+    dj = BattleDJ(sm, battleMusic)
+    dj.start()
 
     mult = fightNum / 5
     enemy_types = ("Carl", "BENJAMIN")
@@ -501,6 +525,8 @@ def bossBattle(mainCharacter, fightNum):
     mainCharacter.health += 10
     mainCharacter.mana += 15
     fightNum += 1
+    dj.stop()
+    sm.fadeout_music(1000)
     return fightNum
 
 def postCombat(mainCharacter):

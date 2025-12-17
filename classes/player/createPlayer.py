@@ -6,6 +6,7 @@ from colorama import Fore, Back, Style
 from PIL import Image
 from  audioMixer import SoundManager
 import images.openPicture as img
+from datetime import datetime
 
 sm = SoundManager()
 class Player:
@@ -24,6 +25,7 @@ class Player:
         self.increaseDefend = 0
         self.partyMembers = []
         self.activeParty = None
+        self.fightNum = 0
 
         
         
@@ -87,7 +89,20 @@ class Player:
         elif color == "red":
             self.health -= 8
             self.damage += 2
+            
+    def getPlayerDict(self):
+        """Returns a dictionary containing all instance variables."""
 
+        return self.__dict__
+    
+    def leaderboardPost(self, fightNum):
+        return {
+            "name": self.name,
+            "type": self.type, # or whatever your attribute is
+            "fight_number": fightNum, # <--- This MUST match the sort key
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    
     def myStats(self):
         avalibleSpace = self.space - len(self.items) 
         print(f"Here is {self.name}'s silly stats\n")

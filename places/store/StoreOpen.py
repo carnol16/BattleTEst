@@ -51,12 +51,12 @@ def openStore(mainCharacter):
         caseName = pickedCase
 
     itemChoices = [
-        StoreItems("Daddy's Belt", 100, True, False, True, False, False, 100, 10, 60),
+        StoreItems("Daddy's Belt", 100, True, False, True, False, False, 100, 10, 60, True),
         StoreItems("Cased Hardened AK-47", 423, True, False, True, False, False, 35, 15, 15, True),
         StoreItems("Gamer Girl Bath Water", 30, False, True, False, True, False, 45, 75, 0),
         StoreItems("Sam Keh's Secret Love For Brian", 10, True, False, False, True, False, 200, 5, 1),
         StoreItems("Top Ramen", 1, False, True, False, True, False, 5, 100, 0),
-        StoreItems("Pink Suit", 70, False, False, False, False, True, 43, 45, 0),
+        StoreItems("Pink Suit", 70, False, False, False, False, True, 43, 45, 0, False),
         StoreItems(caseName, casePrice, False, True, False, False, False, 0, 60, 0),
     ]
 
