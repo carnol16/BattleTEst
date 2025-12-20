@@ -51,7 +51,7 @@ class SoundManager:
     # SOUND EFFECTS
     def play_sfx(self, name):
         if not self.sound_enabled:
-            print(f"(disabled) would play SFX: {name}")
+            #print(f"(disabled) would play SFX: {name}")
             return
 
         if name in self.sfx:
@@ -64,10 +64,10 @@ class SoundManager:
     # MUSIC
     def play_music(self, name, loops=-1, fade_ms=500):
         if name not in self.music:
-            print(f"[ERROR] Music '{name}' not found")
+            #print(f"[ERROR] Music '{name}' not found")
             return
         if not self.sound_enabled:
-            print(f"(disabled) would play Music: {name}")
+            #print(f"(disabled) would play Music: {name}")
             return
         pygame.mixer.music.set_volume(musicVol)
         pygame.mixer.music.load(self.music[name])

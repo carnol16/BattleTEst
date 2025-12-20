@@ -61,9 +61,13 @@ def race(wallet, wager):
     
     for count in range(len(raceHorse)):
         print(f"{count}. {raceHorse[count].name} chances: {round(float(raceHorse[count].speed / totalSpeed) * 100, 2)}% ")
+      
+    try:
+        playerChoice = int(input("Which horse would you like to bet on (0-4)?\n> "))
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        return 0
     
-    playerChoice = int(input("Which horse would you like to bet on (0-4)?\n> "))
-
     # Simulate the race
     positions = [0] * len(raceHorse)
     finish_line = 100

@@ -12,9 +12,11 @@ from places.casino.CasinoOpen import openCasino
 from places.blacksmith.BlackSmithOpen import openBlacksmith
 from classes.player.createPlayer import Player
 from audioMixer import SoundManager
+from classes.items import StoreItems
 from places.restaurant.restaurantOpen import openResturant
 from classes.player.createPlayer import NPC
 import threading
+import images.openPicture as img
 
 class BattleDJ(threading.Thread):
     def __init__(self, sound_manager, clips):
@@ -49,10 +51,16 @@ def has_internet():
         print("No internet detected: Offline mode")
         return False
 
-if has_internet():
-    from places.store.StoreOpen import openStore
+intChoice = input("Would you like to use online features(y/n)?\n>")
+if intChoice.lower() == "y":
+    if has_internet():
+        from places.store.StoreOpen import openStore
+    else:
+        from places.store.StoreOpenOffline import openStore
 else:
     from places.store.StoreOpenOffline import openStore
+    
+
 sm = SoundManager()
 
 battleMusic = [f"out{i:03d}" for i in range(753)]
@@ -277,7 +285,7 @@ def leaderboardPost(mainCharacter, fightNum):
             print(f"\nYour position: {rank}. {e['name']} ({e['type']}) - Fight {e['fight_number']} on {e['date']}")
             break
 
-def enemyBattle(mainCharacter, fightNum):
+def enemyBattle(mainCharacter, fightNum, part):
     
     dj = BattleDJ(sm, battleMusic)
     dj.start()
@@ -286,6 +294,7 @@ def enemyBattle(mainCharacter, fightNum):
     enemy_name = random.choice(enemy_types)
     enemy = Enemy(enemy_name)
     partyMember = mainCharacter.activeParty
+    enemy.health = enemy.health * part
 
     print("\nEnemy #" + str(fightNum + 1) + ": " + enemy_name)
 
@@ -364,6 +373,7 @@ def enemyBattle(mainCharacter, fightNum):
         if mainCharacter.health <= 0:
             print("\n\n\nGAME OVER!")
             leaderboardPost(mainCharacter, fightNum)
+            img.openIMG(destroy=True)
             exit()
         if mainCharacter.activeParty != None:
             if partyMember.health <= 0:
@@ -434,20 +444,42 @@ def enemyBattle(mainCharacter, fightNum):
 
     dj.stop()
     sm.fadeout_music(1000)
+    #dj.join()  # Wait for the audio thread to finish
     mainCharacter.health += 10
     mainCharacter.mana += 15
     fightNum += 1
     return fightNum
 
-def bossBattle(mainCharacter, fightNum):
+def bossBattle(mainCharacter, fightNum, part):
     
     dj = BattleDJ(sm, battleMusic)
     dj.start()
+    if part == 5:
+        mult = part
+        enemy = Boss("STACY'S MOM",fightNum)
+        if mainCharacter.hasItem("Bing Bong"):
+            print("Player has Bing Bong!\nNow that means you get something silly")
+            
+            mainCharacter.health = mainCharacter.health + 150
+            print(f"You got 150 HP!!!\nNew total health: {mainCharacter.health}")
+            
+            #New Weapon
+            old = mainCharacter.weapon
+            mainCharacter.damage -= old.amount
+            mainCharacter.weapon = None
+            mainCharacter.quickStorage(old)
+            print(f"Detached {old.name} and stored it.")
+            
+            newWeapon = StoreItems("BLOWDART OF DOOM", 100, True, False, True, False, False, 500, 10, 0, True)
+            mainCharacter.weapon = newWeapon
+            mainCharacter.damage += newWeapon.amount
+            print(f"Equipped {newWeapon.name}!")
 
-    mult = fightNum / 5
-    enemy_types = ("Carl", "BENJAMIN")
-    enemy_name = random.choice(enemy_types)
-    enemy = Boss(enemy_name, fightNum)
+    else:
+        mult = part
+        enemy_types = ("Carl", "BENJAMIN", "Stacy")
+        enemy_name = random.choice(enemy_types)
+        enemy = Boss(enemy_name, fightNum)
 
     print("\nBoss #" + str(fightNum / 5) + ": " + enemy_name)
 
@@ -462,7 +494,7 @@ def bossBattle(mainCharacter, fightNum):
             # Enemy attacks
             success = random.randint(0, 100)
             if success % 4 == 0:
-                dmg = Boss.attackBoss(enemy)
+                dmg = Boss.attackBoss(enemy) * part
             else:
                 dmg = Boss.attack(enemy, success)
             
@@ -505,6 +537,7 @@ def bossBattle(mainCharacter, fightNum):
         if mainCharacter.health <= 0:
             print("GAME OVER!")
             leaderboardPost(mainCharacter, fightNum)
+            img.openIMG(destroy=True)
             exit()
     print("Congrats!!! You defeated the", enemy_name)
 
@@ -572,6 +605,7 @@ def postCombat(mainCharacter):
 
             elif stop.lower() == "6":
                 print("\nYou continue your journey...\n\n")
+                img.openIMG(destroy=True)
                 break
 
             else:

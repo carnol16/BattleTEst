@@ -95,16 +95,32 @@ class Boss(Enemy):
             self.special = (
                 Special("Vtuber Stacy Body Pillow", "attack", True, False, 35, 30),
                 Special("Snacks of Various Tasty", "heal", False, True, random.randint(10, 100), random.randint(10, 30))
-                )
+            )
             self.drop = ("gold", "gold", "gold", "gold", "gold") + self.special
+            
+        if kind == "Stacy":
+            self.health = 180 * (fightNum / 5)
+            self.damage = 7
+            self.defense = 8
+            self.flying = False
+            self.special = (
+                Special("Thirst Trap", "attack", True, False, 75, 45),
+                Special("Starbucks Strawbeery Acai Refresher...\nGrande in a Venti Cup", "heal", False, True, 100, 65)
+            )
+            self.drop = ("gold", "gold", "gold", "gold", "gold") + self.special
+            
         
         
-        if kind == "STACY MOM":
-            self.health = 100 * (fightNum / 5)
+        if kind == "STACY'S MOM":
+            self.health = 300 * (fightNum / 5)
             self.damage = 50
             self.defense = 3
             self.flying = False
-
+            self.special = (
+                Special("Homemade Tacos", "heal", False, True, 150, 80),
+                Special("KAREN MODE", "attack", True, False, 200, 85)
+            )
+            self.drop = ("gold", "gold", "gold", "gold", "gold") + self.special
         
             
             

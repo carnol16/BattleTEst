@@ -36,7 +36,7 @@ class Player:
             self.defense = 4
             self.space = 3
             self.attacks = [
-                Special("Taco HITTER", "attack", True, False, 20, 10),
+                Special("Taco HITTER", "attack", True, False, 20, 25),
                 Special("Counter Strike", "attack", True, False, 10, 10),
                 Special("Children Tears", "heal", False, True, 100, 50)
             ]   
@@ -160,7 +160,15 @@ class Player:
                 print(Fore.WHITE + f"{counter}: ", Fore.YELLOW + f"{i.name}", Fore.WHITE + "||", Fore.BLUE + f"Cost: {i.manaCost}", Fore.WHITE + "||" ,  colorPick() + f"+{i.amount} {typeName}")
                 counter += 1
                 
-            specialChoice = int(input(Fore.WHITE + "\nWhich special do you wanna useeeeeee? "))
+            try:
+                specialChoice = int(input(Fore.WHITE + "\nWhich special do you wanna useeeeeee? "))
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+                return 0
+
+            if not (0 <= specialChoice < len(self.attacks)):
+                print("Invalid special choice.")
+                return 0
 
             # FIXED: use(self, enemy) instead of mainCharacter, enemy
             dmg = self.attacks[specialChoice].use(self, enemy)
@@ -180,7 +188,15 @@ class Player:
                             return Fore.MAGENTA
                     print(counter, i.name)
                     counter += 1
-                itemChoice = int(input("\nwhich item do you wanna useeeeeee? "))
+                try:
+                    itemChoice = int(input("\nwhich item do you wanna useeeeeee? "))
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+                    return 0
+
+                if not (0 <= itemChoice < len(self.items)):
+                    print("Invalid item choice.")
+                    return 0
 
                 # FIXED: use(self, enemy)
                 self.items[itemChoice].use(self, enemy)
@@ -232,7 +248,7 @@ class Player:
                     self.armor.durability = 0
                     print(f"\n{self.armor.name} broke!")
                     self.armor.detach(self)
-                    self.items.remove(self)
+                    #self.items.remove(self)
 
                 return reducedDamage
 
@@ -469,7 +485,12 @@ class Player:
                 
             else:
                 print("your loss:( ")    
-        
+    
+    def hasItem(self, itemName):
+        for item in self.items:
+            if item.name == itemName:
+                return True
+        return False    
 
       
 

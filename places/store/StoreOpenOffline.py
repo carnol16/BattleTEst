@@ -3,9 +3,9 @@ from classes.items import StoreItems
 from classes.player.createPlayer import Player
 from classes.player.armor import Armor
 from classes.player.specials import Special
-#from classes.priceGrab import csPriceChecker
-#from classes.priceGrab import marketItem
-#from classes.items import CaseItem
+from classes.priceGrab import csPriceChecker
+from classes.priceGrab import marketItem
+from classes.items import CaseItem
 from PIL import Image
 import time
 from audioMixer import SoundManager
@@ -27,9 +27,21 @@ def openStore(mainCharacter):
     sm.play_music(pickedMusic)
     print(f"\nWELCOME TO BIG TOP {mainCharacter.name}!")
 
+    caseChoices = [
+        "Chroma Case",
+        # "Gamma Case",
+        # "Dreams & Nightmares Case",
+        # "Kilowatt Case",
+        "Fever Case"
+        # "CS:GO Weapon Case"
+    ]
 
+    #pickedCase = caseChoices[random.randint(0,4)]
 
+    pickedCase = caseChoices[random.randint(0,1)]
 
+    casePrice = random.randint(10,50)  # default price
+    caseName = pickedCase
 
     itemChoices = [
         StoreItems("Daddy's Belt", 100, True, False, True, False, False, 100, 10, 60, True),
@@ -37,8 +49,8 @@ def openStore(mainCharacter):
         StoreItems("Gamer Girl Bath Water", 30, False, True, False, True, False, 45, 75, 0),
         StoreItems("Sam Keh's Secret Love For Brian", 10, True, False, False, True, False, 200, 5, 1),
         StoreItems("Top Ramen", 1, False, True, False, True, False, 5, 100, 0),
-        StoreItems("Pink Suit", 70, False, False, False, False, True, 43, 45, 0),
-        
+        StoreItems("Pink Suit", 70, False, False, False, False, True, 43, 45, 0, False),
+        StoreItems(caseName, casePrice, False, True, False, False, False, 0, 60, 0),
     ]
 
     availableItems = []
@@ -98,11 +110,11 @@ def openStore(mainCharacter):
                             f"You bought {chosen.name} for {chosen.price} Monkey Money!"
                         )
 
-                        #if "Case" in chosen.name:
-                        #    mainCharacter.items.append(CaseItem(chosen.name))
-                        #   print(f"{chosen.name} added to your inventory!")
+                        if "Case" in chosen.name:
+                            mainCharacter.items.append(CaseItem(chosen.name))
+                            print(f"{chosen.name} added to your inventory!")
 
-                        if chosen.armor:
+                        elif chosen.armor:
                             print(f"{chosen.name} is armor!")
 
                             equip = input("Equip it now? (yes/no): ").lower()
@@ -190,23 +202,22 @@ def openStore(mainCharacter):
                 itemToSell = mainCharacter.items[idx]
 
                 # CASES SELL AT MARKET VALUE
-                
-                #if "Case" in itemToSell.name:
-                #    market = csPriceChecker()
-                #    caseInfo = market.getItem(itemToSell.name)
+                if "Case" in itemToSell.name:
+                    market = csPriceChecker()
+                    caseInfo = market.getItem(itemToSell.name)
 
-                #    if caseInfo.price is not None:
-                #       sellPrice = int(caseInfo.price * 10)  # same multiplier used when buying
-                    #else:
-                    #    sellPrice = 10  # fallback if API fails
+                    if caseInfo.price is not None:
+                        sellPrice = int(caseInfo.price * 10)  # same multiplier used when buying
+                    else:
+                        sellPrice = 10  # fallback if API fails
 
-                    #print(f"\nMarket price detected for {itemToSell.name}: {sellPrice}")
+                    print(f"\nMarket price detected for {itemToSell.name}: {sellPrice}")
 
-                #else:
-                    # Regular items sell for 50% price
-                if hasattr(itemToSell, "price"):
-                        sellPrice = int(itemToSell.price * 0.5)
                 else:
+                    # Regular items sell for 50% price
+                    if hasattr(itemToSell, "price"):
+                        sellPrice = int(itemToSell.price * 0.5)
+                    else:
                         sellPrice = 5
 
                 confirm = input(f"Sell {itemToSell.name} for {sellPrice}? (yes/no): ").lower()

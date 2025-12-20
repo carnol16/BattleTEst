@@ -6,20 +6,21 @@ class Weapon:
         self.weapon = True
         self.armor = False
         
-        def toStoreItem(self):
-            from classes.items import StoreItems
-            return StoreItems(
-                self.name,
-                price=0,            # you can decide price later
-                specials=False,
-                items=True,
-                damage=False,
-                heal=False,
-                armor=True,
-                amount=self.amount,
-                rarity=50,
-                manaCost=0
-            )
+    def toStoreItem(self):
+        from classes.items import StoreItems
+        return StoreItems(
+            self.name,
+            price=0,            # you can decide price later
+            specials=False,
+            items=True,
+            damage=False,
+            heal=False,
+            armor=False,
+            amount=self.amount,
+            rarity=50,
+            manaCost=0,
+            weapon=True
+        )
 
     def attach(self, user):
         if user.weapon:

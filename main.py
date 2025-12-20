@@ -4,11 +4,14 @@ import os
 from audioMixer import SoundManager
 import json
 import datetime
+import atexit
+import pygame
 
-SoundManager(sound_enabled = False)
+atexit.register(pygame.quit)
 
 
-mainCharacter = Player("boat man", "blue", "Dmytro" )
+
+mainCharacter = Player("boat man", "blue", "mommy" )
 #mainCharacter.activeParty = (NPC("Parim the Iguana", "blue"))
 
 #mainCharacter = characterBuildIntro()      
@@ -21,13 +24,14 @@ while mainCharacter.health > 0:
     mainCharacter.fightNum = fightNum
 
     if fightNum % 5 == 0 and fightNum != 0:
-        fightNum = bossBattle(mainCharacter, fightNum)
-        os.system('cls' if os.name == 'nt' else 'clear')
+        fightNum = bossBattle(mainCharacter, fightNum, part)
+        print('\033[2J\033[3J\033[H', end='')  # Clear screen and scrollback
         part += 1
         print(f"Now we begin part {part} ")
         
     else:
-        fightNum = enemyBattle(mainCharacter, fightNum)
+        fightNum = enemyBattle(mainCharacter, fightNum, part)
+        #print('\033[2J\033[3J\033[H', end='')  # Clear screen and scrollback
     
     postCombat(mainCharacter)
-
+    print('\033[2J\033[3J\033[H', end='') 

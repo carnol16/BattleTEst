@@ -12,6 +12,7 @@ def openIMG(path):
 
     pil = Image.open(path)
     tkimg = ImageTk.PhotoImage(pil)
+    pil.close()  # Close PIL image to free memory
 
     label = tk.Label(root, image=tkimg)
     label.image = tkimg
