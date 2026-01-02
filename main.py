@@ -11,10 +11,10 @@ atexit.register(pygame.quit)
 
 
 
-mainCharacter = Player("boat man", "blue", "mommy" )
+#mainCharacter = Player("boat man", "blue", "mommy" )
 #mainCharacter.activeParty = (NPC("Parim the Iguana", "blue"))
 
-#mainCharacter = characterBuildIntro()      
+mainCharacter = characterBuildIntro()      
 print("Part 1")                                                                                                      
 fightNum = 0
 part = 1
